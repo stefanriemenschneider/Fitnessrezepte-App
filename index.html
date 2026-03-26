@@ -475,10 +475,13 @@ display:flex;flex-direction:column;gap:14px;}
 const STORAGE_KEYS={favorites:'fitRecipesFavorites',lastRecipe:'fitRecipesLastRecipe'};
 const state={recipes:(window.RECIPE_DATA||[]).map((item,index)=>({...item,index})),currentIndex:0,favorites:new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.favorites)||'[]'))};
 const els={app:document.getElementById('app'),drawerBackdrop:document.getElementById('drawerBackdrop'),drawer:document.getElementById('recipeDrawer'),drawerList:document.getElementById('recipeList'),toast:document.getElementById('toast')};
+const ASSET_VERSION='v9-20260326';
 const RECIPE_IMAGES={};
+function assetUrl(path){ return `${path}?v=${ASSET_VERSION}`; }
 function getRecipeImage(id){
-  return RECIPE_IMAGES[id]||{src:`./images/${id}.jpg`,fallback:`./images/${id}.jpg`};
+  return RECIPE_IMAGES[id]||{src:assetUrl(`./images/${id}.jpg`),fallback:assetUrl(`./images/${id}.jpg`)};
 }
+
 function recipeImageTag(id,alt='',className=''){
   const image=getRecipeImage(id);
   return `<img ${className?`class="${className}" `:''}src="${image.src}" data-fallback="${image.fallback}" onerror="if(!this.dataset.failed&&this.dataset.fallback){this.dataset.failed='1';this.src=this.dataset.fallback;return;}this.onerror=null;" alt="${alt}" loading="lazy" />`;
@@ -520,7 +523,7 @@ function recipePoster(recipe){
     <div class="app-shell">
       <header class="topbar">
         <div class="brand">
-          <img class="brand-logo" src="./brand/logo-fit-coaching.png" alt="Fit Coaching Logo" />
+          <img class="brand-logo" src="${assetUrl('./brand/logo-fit-coaching.png')}" alt="Fit Coaching Logo" />
           <div class="brand-copy">
             <h1>Fitnessrezepte App</h1>
             <p>Deine virtuelle Rezeptsammlung mit echten Food-Fotos</p>
@@ -549,7 +552,7 @@ function recipePoster(recipe){
               <div class="recipe-sub">${recipe.category} · ${recipe.time}</div>
             </div>
             <div class="poster-brand" aria-hidden="true">
-              <img src="./brand/logo-fit-coaching.png" alt="" />
+              <img src="${assetUrl('./brand/logo-fit-coaching.png')}" alt="" />
             </div>
           </div>
 
