@@ -1,0 +1,671 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#1f2a44" />
+  <meta name="description" content="Virtuelle Fitnessrezepte App mit Favoriten, Teilen und Rezeptliste." />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="./icons/favicon.png" type="image/png" />
+  <title>Fitnessrezepte App</title>
+  <style>
+:root{
+  --bg:#f5f7fb;
+  --panel:#ffffffcc;
+  --panel-solid:#ffffff;
+  --text:#172033;
+  --muted:#62708d;
+  --line:#dbe3f0;
+  --shadow:0 20px 50px rgba(25,36,64,.12);
+  --radius:26px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:
+radial-gradient(circle at top left, #ffffff 0%, #eef4ff 30%, #f5f7fb 100%);color:var(--text);min-height:100%;}
+body{padding:18px 14px 30px}
+button{font:inherit;border:none;cursor:pointer}
+.app-shell{max-width:900px;margin:0 auto}
+.topbar{display:flex;align-items:center;gap:12px;justify-content:space-between;margin-bottom:16px;}
+.brand{display:flex;align-items:center;gap:14px;min-width:0;}
+.brand-logo{display:block;height:56px;width:auto;max-width:min(48vw,320px);object-fit:contain;filter:drop-shadow(0 8px 18px rgba(20,30,60,.08));}
+.brand-copy{min-width:0}
+.brand h1{margin:0;font-size:1.1rem;line-height:1.1}
+.brand p{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+.action-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.chip-btn,.icon-btn,.nav-btn,.primary-btn{background:var(--panel-solid);color:var(--text);border:1px solid var(--line);box-shadow:0 10px 20px rgba(20,30,60,.06);}
+.chip-btn{padding:12px 16px;border-radius:16px;font-weight:700;}
+.icon-btn{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:1.1rem;}
+.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
+.stat-card{background:var(--panel);backdrop-filter:blur(10px);border:1px solid #ffffff80;border-radius:20px;padding:12px 14px;box-shadow:var(--shadow);}
+.stat-card .label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.stat-card .value{margin-top:4px;font-size:1rem;font-weight:800}
+.recipe-stage{position:relative;background:var(--panel);backdrop-filter:blur(12px);border:1px solid #ffffff90;border-radius:34px;box-shadow:var(--shadow);padding:14px;}
+.poster{position:relative;overflow:hidden;min-height:640px;border-radius:28px;padding:22px;background:
+radial-gradient(circle at 15% 10%, color-mix(in srgb, var(--accent) 50%, white) 0%, transparent 30%),
+radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--accent) 36%, white) 0%, transparent 28%),
+linear-gradient(160deg, color-mix(in srgb, var(--accent) 20%, white) 0%, #ffffff 46%, #f5f7fb 100%);
+display:flex;flex-direction:column;gap:14px;}
+.poster::before,.poster::after{content:"";position:absolute;border-radius:999px;filter:blur(8px);opacity:.55;pointer-events:none;}
+.poster::before{width:220px;height:220px;right:-50px;bottom:60px;background:color-mix(in srgb, var(--accent) 58%, white)}
+.poster::after{width:180px;height:180px;left:-40px;top:120px;background:color-mix(in srgb, var(--accent) 36%, white)}
+.poster-top{position:relative;z-index:1;display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;}
+.poster-brand{background:#ffffffcf;border:1px solid #ffffff;backdrop-filter:blur(10px);border-radius:22px;padding:10px 12px;display:flex;align-items:center;justify-content:center;min-width:190px;box-shadow:0 12px 24px rgba(20,30,60,.06);}
+.poster-brand img{display:block;width:100%;max-width:210px;height:auto;object-fit:contain;}
+.poster-hero{position:relative;z-index:1;overflow:hidden;border-radius:26px;padding:10px;background:#ffffffdc;border:1px solid #ffffff;box-shadow:0 12px 24px rgba(20,30,60,.05);}
+.poster-hero img{display:block;width:100%;height:clamp(300px,42vw,420px);object-fit:cover;border-radius:20px;}
+.recipe-link-main{display:flex;align-items:center;gap:12px;min-width:0;flex:1;}
+.recipe-thumb{width:62px;height:62px;border-radius:16px;object-fit:cover;background:#f1f5fb;border:1px solid #e6edf8;flex:0 0 auto;}
+.recipe-text{min-width:0;}
+.recipe-text div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.badge-row{display:flex;flex-wrap:wrap;gap:8px}
+.badge{background:#ffffffcf;border:1px solid #ffffff;backdrop-filter:blur(10px);border-radius:999px;padding:8px 12px;font-size:.82rem;font-weight:700;color:#33405e;}
+.recipe-title{margin:0;font-size:clamp(1.8rem,5vw,2.7rem);line-height:.96;max-width:520px;}
+.recipe-sub{margin-top:8px;color:#44526f;font-weight:600}
+.macro-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
+.macro{background:#ffffffd6;border:1px solid #ffffff;padding:12px;border-radius:18px;}
+.macro .k{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.macro .v{margin-top:4px;font-size:1.15rem;font-weight:800}
+.content-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;}
+.panel{background:#ffffffdc;border:1px solid #ffffff;border-radius:22px;padding:18px;display:flex;flex-direction:column;}
+.panel h3{margin:0 0 12px;font-size:1.02rem}
+.ing-list,.step-list{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.ing-list li,.step-list li{display:flex;gap:10px;align-items:flex-start;color:#24314d;font-weight:600;line-height:1.35;}
+.dot,.step-no{flex:0 0 auto;width:24px;height:24px;border-radius:999px;display:grid;place-items:center;font-size:.82rem;background:color-mix(in srgb, var(--accent) 28%, white);color:#1e2a42;font-weight:800;}
+.poster-footer{position:relative;z-index:1;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;color:#42506c;font-size:.92rem;font-weight:600;}
+.poster-footer .mini{opacity:.9}
+.controls{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:14px;flex-wrap:wrap;}
+.nav-group,.utility-group{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.nav-btn,.primary-btn{padding:13px 18px;border-radius:16px;font-weight:800;}
+.primary-btn{background:linear-gradient(135deg,#1f2a44,#2f5fff);color:#fff;border:none;}
+.secondary-info{color:var(--muted);font-weight:700;}
+.drawer-backdrop{position:fixed;inset:0;background:rgba(10,16,30,.36);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:.25s;}
+.drawer-backdrop.open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;width:min(92vw,420px);height:100%;background:#f9fbff;box-shadow:-20px 0 50px rgba(10,16,30,.18);padding:18px;transform:translateX(102%);transition:.28s;display:flex;flex-direction:column;gap:14px;}
+.drawer.open{transform:translateX(0)}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.drawer-head h2{margin:0;font-size:1.15rem}
+.recipe-list{display:grid;gap:10px;overflow:auto;padding-bottom:24px}
+.recipe-link{width:100%;text-align:left;padding:14px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:800;color:var(--text);}
+.recipe-link small{display:block;color:var(--muted);font-weight:700;margin-top:4px}
+.recipe-link.active{border-color:color-mix(in srgb, var(--accent) 40%, #a9b6d3);box-shadow:0 14px 32px rgba(30,40,70,.08);}
+.favorite-star{font-size:1.05rem}
+.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(24px);background:#192440;color:#fff;padding:12px 16px;border-radius:16px;font-weight:700;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.22s;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.empty-hint{color:var(--muted);font-weight:600;margin-top:6px}
+@media (max-width:720px){
+  body{padding:12px 10px 24px}
+  .topbar{align-items:flex-start;flex-direction:column}
+  .action-row{width:100%;justify-content:flex-start}
+  .brand-logo{max-width:min(70vw,320px);height:48px}
+  .stats-strip{grid-template-columns:repeat(2,1fr)}
+  .macro-grid,.content-grid{grid-template-columns:1fr 1fr}
+  .poster{min-height:unset}
+}
+@media (max-width:560px){
+  .macro-grid,.content-grid{grid-template-columns:1fr}
+  .controls{align-items:stretch}
+  .nav-group,.utility-group{width:100%}
+  .nav-btn,.primary-btn{flex:1}
+}
+</style>
+</head>
+<body>
+  <div id="app"></div>
+
+  <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
+  <aside class="drawer" id="recipeDrawer" aria-label="Rezeptliste">
+    <div class="drawer-head">
+      <h2>Rezepte</h2>
+      <button class="icon-btn" id="closeDrawerBtn" aria-label="Schließen">×</button>
+    </div>
+    <div class="empty-hint">Wähle ein Rezept aus der Liste.</div>
+    <div class="recipe-list" id="recipeList"></div>
+  </aside>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script>window.RECIPE_DATA = [
+  {
+    "id": "protein-pancakes",
+    "title": "Protein Pancakes",
+    "category": "Frühstück",
+    "time": "15 Min.",
+    "kcal": 420,
+    "protein": 36,
+    "carbs": 34,
+    "fat": 14,
+    "accent": "#7bc6ff",
+    "ingredients": [
+      "60 g Haferflocken",
+      "30 g Vanille-Proteinpulver",
+      "2 Eier",
+      "120 g Skyr",
+      "1 Banane",
+      "1 TL Backpulver"
+    ],
+    "steps": [
+      "Alle Zutaten mixen.",
+      "Teig 2–3 Min. quellen lassen.",
+      "In beschichteter Pfanne goldbraun ausbacken."
+    ],
+    "badges": [
+      "High Protein",
+      "Meal Prep",
+      "Süß"
+    ]
+  },
+  {
+    "id": "chicken-rice-bowl",
+    "title": "Chicken Rice Bowl",
+    "category": "Lunch",
+    "time": "25 Min.",
+    "kcal": 560,
+    "protein": 48,
+    "carbs": 52,
+    "fat": 16,
+    "accent": "#8ce99a",
+    "ingredients": [
+      "180 g Hähnchenbrust",
+      "75 g Reis (roh)",
+      "150 g Brokkoli",
+      "1 TL Olivenöl",
+      "Paprika, Salz, Pfeffer",
+      "1 EL Sojasauce light"
+    ],
+    "steps": [
+      "Reis garen und Brokkoli bissfest kochen.",
+      "Hähnchen würzen und anbraten.",
+      "Alles mit Sojasauce in einer Bowl anrichten."
+    ],
+    "badges": [
+      "Lean",
+      "Klassiker",
+      "Post Workout"
+    ]
+  },
+  {
+    "id": "skyr-berry-cup",
+    "title": "Skyr Berry Cup",
+    "category": "Snack",
+    "time": "5 Min.",
+    "kcal": 280,
+    "protein": 30,
+    "carbs": 24,
+    "fat": 4,
+    "accent": "#e599f7",
+    "ingredients": [
+      "250 g Skyr",
+      "100 g Beeren",
+      "15 g Mandelmus",
+      "10 g Chiasamen",
+      "Etwas Zimt"
+    ],
+    "steps": [
+      "Skyr in eine Schale geben.",
+      "Beeren, Chiasamen und Mandelmus darauf verteilen.",
+      "Mit Zimt toppen und kalt genießen."
+    ],
+    "badges": [
+      "Low Fat",
+      "Schnell",
+      "Fresh"
+    ]
+  },
+  {
+    "id": "salmon-sweetpotato",
+    "title": "Lachs mit Süßkartoffel",
+    "category": "Dinner",
+    "time": "30 Min.",
+    "kcal": 610,
+    "protein": 44,
+    "carbs": 42,
+    "fat": 28,
+    "accent": "#ffa94d",
+    "ingredients": [
+      "180 g Lachsfilet",
+      "250 g Süßkartoffel",
+      "150 g Zucchini",
+      "1 TL Olivenöl",
+      "Zitrone, Dill, Salz"
+    ],
+    "steps": [
+      "Süßkartoffel würfeln und im Ofen backen.",
+      "Lachs würzen und in Pfanne oder Ofen garen.",
+      "Mit Zucchini und Zitrone servieren."
+    ],
+    "badges": [
+      "Omega-3",
+      "Dinner",
+      "Clean"
+    ]
+  },
+  {
+    "id": "tuna-wrap",
+    "title": "Thunfisch Wrap",
+    "category": "Lunch",
+    "time": "10 Min.",
+    "kcal": 390,
+    "protein": 38,
+    "carbs": 27,
+    "fat": 11,
+    "accent": "#66d9e8",
+    "ingredients": [
+      "1 Vollkorn-Wrap",
+      "1 Dose Thunfisch im eigenen Saft",
+      "80 g Hüttenkäse",
+      "Salatmix",
+      "Tomate",
+      "Pfeffer, Kräuter"
+    ],
+    "steps": [
+      "Thunfisch abtropfen lassen und mit Hüttenkäse mischen.",
+      "Wrap mit Salat und Tomaten belegen.",
+      "Füllen, einrollen und halbieren."
+    ],
+    "badges": [
+      "To Go",
+      "High Protein",
+      "Schnell"
+    ]
+  },
+  {
+    "id": "overnight-oats",
+    "title": "Overnight Oats",
+    "category": "Frühstück",
+    "time": "5 Min. + Ziehzeit",
+    "kcal": 440,
+    "protein": 33,
+    "carbs": 46,
+    "fat": 13,
+    "accent": "#ffd43b",
+    "ingredients": [
+      "60 g Haferflocken",
+      "200 ml Milch oder Drink",
+      "30 g Proteinpulver",
+      "100 g Joghurt",
+      "1 Apfel",
+      "Zimt"
+    ],
+    "steps": [
+      "Alles außer dem Apfel verrühren.",
+      "Über Nacht kalt stellen.",
+      "Am Morgen Apfelwürfel und Zimt ergänzen."
+    ],
+    "badges": [
+      "Meal Prep",
+      "Sättigend",
+      "Morning"
+    ]
+  },
+  {
+    "id": "turkey-pasta",
+    "title": "Puten Pasta Fit",
+    "category": "Dinner",
+    "time": "25 Min.",
+    "kcal": 570,
+    "protein": 47,
+    "carbs": 54,
+    "fat": 15,
+    "accent": "#ff8787",
+    "ingredients": [
+      "80 g Vollkornnudeln (roh)",
+      "180 g Putenbrust",
+      "150 g passierte Tomaten",
+      "1 Zwiebel",
+      "1 TL Olivenöl",
+      "Basilikum, Salz, Pfeffer"
+    ],
+    "steps": [
+      "Nudeln garen.",
+      "Pute und Zwiebel anbraten, Tomaten zugeben.",
+      "Mit Nudeln vermengen und würzen."
+    ],
+    "badges": [
+      "Pasta",
+      "Lean",
+      "After Gym"
+    ]
+  },
+  {
+    "id": "egg-avocado-toast",
+    "title": "Ei & Avocado Toast",
+    "category": "Frühstück",
+    "time": "12 Min.",
+    "kcal": 410,
+    "protein": 24,
+    "carbs": 28,
+    "fat": 22,
+    "accent": "#69db7c",
+    "ingredients": [
+      "2 Scheiben Vollkorntoast",
+      "2 Eier",
+      "1/2 Avocado",
+      "Chiliflocken",
+      "Zitronensaft",
+      "Salz, Pfeffer"
+    ],
+    "steps": [
+      "Toast rösten und Avocado zerdrücken.",
+      "Eier nach Wunsch garen.",
+      "Brot belegen und würzig servieren."
+    ],
+    "badges": [
+      "Healthy Fats",
+      "Brunch",
+      "Easy"
+    ]
+  },
+  {
+    "id": "cottage-cheese-bowl",
+    "title": "Cottage Cheese Bowl",
+    "category": "Snack",
+    "time": "5 Min.",
+    "kcal": 310,
+    "protein": 29,
+    "carbs": 18,
+    "fat": 12,
+    "accent": "#b197fc",
+    "ingredients": [
+      "200 g Hüttenkäse",
+      "1 Kiwi",
+      "15 g Walnüsse",
+      "1 TL Honig",
+      "Zimt oder Vanille"
+    ],
+    "steps": [
+      "Hüttenkäse in eine Bowl geben.",
+      "Kiwi schneiden und Walnüsse hacken.",
+      "Mit Honig und Gewürzen abrunden."
+    ],
+    "badges": [
+      "Snack",
+      "Protein",
+      "Cremig"
+    ]
+  },
+  {
+    "id": "beef-burger-bowl",
+    "title": "Beef Burger Bowl",
+    "category": "Lunch",
+    "time": "20 Min.",
+    "kcal": 590,
+    "protein": 46,
+    "carbs": 31,
+    "fat": 29,
+    "accent": "#c0eb75",
+    "ingredients": [
+      "180 g Rinderhack mager",
+      "200 g Kartoffeln",
+      "Salatmix",
+      "Tomaten",
+      "Gewürzgurken",
+      "Joghurtsauce light"
+    ],
+    "steps": [
+      "Kartoffeln würfeln und knusprig backen.",
+      "Hack würzen und scharf anbraten.",
+      "Mit Salat, Tomaten und Sauce als Bowl servieren."
+    ],
+    "badges": [
+      "Burger Style",
+      "High Protein",
+      "Herzhaft"
+    ]
+  },
+  {
+    "id": "protein-mug-cake",
+    "title": "Protein Mug Cake",
+    "category": "Snack",
+    "time": "6 Min.",
+    "kcal": 290,
+    "protein": 27,
+    "carbs": 22,
+    "fat": 8,
+    "accent": "#f783ac",
+    "ingredients": [
+      "30 g Schoko-Proteinpulver",
+      "20 g Hafermehl",
+      "1 Ei",
+      "50 ml Milch",
+      "1 TL Backkakao",
+      "1/2 TL Backpulver"
+    ],
+    "steps": [
+      "Alle Zutaten in einer Tasse verrühren.",
+      "60–90 Sek. in der Mikrowelle backen.",
+      "Kurz abkühlen lassen und warm essen."
+    ],
+    "badges": [
+      "Sweet",
+      "Quick",
+      "Protein"
+    ]
+  },
+  {
+    "id": "shrimp-couscous",
+    "title": "Garnelen Couscous Fit",
+    "category": "Dinner",
+    "time": "20 Min.",
+    "kcal": 500,
+    "protein": 41,
+    "carbs": 45,
+    "fat": 14,
+    "accent": "#74c0fc",
+    "ingredients": [
+      "180 g Garnelen",
+      "70 g Couscous",
+      "150 g Paprika",
+      "1 TL Olivenöl",
+      "Knoblauch",
+      "Zitrone, Petersilie"
+    ],
+    "steps": [
+      "Couscous mit heißem Wasser quellen lassen.",
+      "Garnelen mit Knoblauch kurz anbraten.",
+      "Mit Paprika, Zitrone und Petersilie mischen."
+    ],
+    "badges": [
+      "Light",
+      "Mediterran",
+      "Protein"
+    ]
+  }
+];</script>
+  <script>
+const STORAGE_KEYS={favorites:'fitRecipesFavorites',lastRecipe:'fitRecipesLastRecipe'};
+const state={recipes:(window.RECIPE_DATA||[]).map((item,index)=>({...item,index})),currentIndex:0,favorites:new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.favorites)||'[]'))};
+const els={app:document.getElementById('app'),drawerBackdrop:document.getElementById('drawerBackdrop'),drawer:document.getElementById('recipeDrawer'),drawerList:document.getElementById('recipeList'),toast:document.getElementById('toast')};
+const RECIPE_IMAGES={};
+function getRecipeImage(id){
+  return RECIPE_IMAGES[id]||{src:`./images/${id}.jpg`,fallback:`./images/${id}.jpg`};
+}
+function recipeImageTag(id,alt='',className=''){
+  const image=getRecipeImage(id);
+  return `<img ${className?`class="${className}" `:''}src="${image.src}" data-fallback="${image.fallback}" onerror="if(!this.dataset.failed&&this.dataset.fallback){this.dataset.failed='1';this.src=this.dataset.fallback;return;}this.onerror=null;" alt="${alt}" loading="lazy" />`;
+}
+
+function showToast(message){
+  els.toast.textContent=message; els.toast.classList.add('show');
+  clearTimeout(showToast._timer);
+  showToast._timer=setTimeout(()=>els.toast.classList.remove('show'),1900);
+}
+function getRecipeByHash(){
+  const hash=decodeURIComponent(location.hash.replace('#','').trim());
+  if(!hash) return null;
+  return state.recipes.find(recipe=>recipe.id===hash)||null;
+}
+function setCurrentRecipe(index, updateHash=true){
+  if(!state.recipes.length) return;
+  const total=state.recipes.length;
+  state.currentIndex=(index+total)%total;
+  const recipe=state.recipes[state.currentIndex];
+  localStorage.setItem(STORAGE_KEYS.lastRecipe, recipe.id);
+  if(updateHash) history.replaceState(null,'','#'+encodeURIComponent(recipe.id));
+  render();
+}
+function restoreInitialRecipe(){
+  const fromHash=getRecipeByHash();
+  if(fromHash){ state.currentIndex=fromHash.index; return; }
+  const lastId=localStorage.getItem(STORAGE_KEYS.lastRecipe);
+  const lastRecipe=state.recipes.find(recipe=>recipe.id===lastId);
+  if(lastRecipe) state.currentIndex=lastRecipe.index;
+}
+function isFavorite(id){ return state.favorites.has(id); }
+function recipePoster(recipe){
+  const ing=recipe.ingredients.map(item=>`<li><span class="dot">✓</span><span>${item}</span></li>`).join('');
+  const steps=recipe.steps.map((item,idx)=>`<li><span class="step-no">${idx+1}</span><span>${item}</span></li>`).join('');
+  const badges=recipe.badges.map(item=>`<span class="badge">${item}</span>`).join('');
+  const fav=isFavorite(recipe.id)?'★':'☆';
+  return `
+    <div class="app-shell">
+      <header class="topbar">
+        <div class="brand">
+          <img class="brand-logo" src="./brand/logo-fit-coaching.png" alt="Fit Coaching Logo" />
+          <div class="brand-copy">
+            <h1>Fitnessrezepte App</h1>
+            <p>Deine virtuelle Rezeptsammlung mit echten Food-Fotos</p>
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="chip-btn" id="openRecipesBtn" aria-label="Rezeptliste öffnen">Rezepte</button>
+          <button class="icon-btn" id="favoriteBtn" aria-label="Favorit umschalten" title="Favorit">${fav}</button>
+          <button class="icon-btn" id="shareBtn" aria-label="Rezept teilen" title="Teilen">↗</button>
+        </div>
+      </header>
+
+      <section class="stats-strip" aria-label="Kurzübersicht">
+        <div class="stat-card"><div class="label">Kategorie</div><div class="value">${recipe.category}</div></div>
+        <div class="stat-card"><div class="label">Zubereitung</div><div class="value">${recipe.time}</div></div>
+        <div class="stat-card"><div class="label">Rezepte</div><div class="value">${state.recipes.length}</div></div>
+        <div class="stat-card"><div class="label">Favoriten</div><div class="value">${state.favorites.size}</div></div>
+      </section>
+
+      <main class="recipe-stage">
+        <article class="poster" style="--accent:${recipe.accent}">
+          <div class="poster-top">
+            <div>
+              <div class="badge-row">${badges}</div>
+              <h2 class="recipe-title">${recipe.title}</h2>
+              <div class="recipe-sub">${recipe.category} · ${recipe.time}</div>
+            </div>
+            <div class="poster-brand" aria-hidden="true">
+              <img src="./brand/logo-fit-coaching.png" alt="" />
+            </div>
+          </div>
+
+          <div class="poster-hero">
+            ${recipeImageTag(recipe.id, `${recipe.title} Rezeptbild`)}
+          </div>
+
+          <section class="macro-grid" aria-label="Makros">
+            <div class="macro"><div class="k">Kalorien</div><div class="v">${recipe.kcal} kcal</div></div>
+            <div class="macro"><div class="k">Protein</div><div class="v">${recipe.protein} g</div></div>
+            <div class="macro"><div class="k">Kohlenhydrate</div><div class="v">${recipe.carbs} g</div></div>
+            <div class="macro"><div class="k">Fett</div><div class="v">${recipe.fat} g</div></div>
+          </section>
+
+          <section class="content-grid">
+            <div class="panel">
+              <h3>Zutaten</h3>
+              <ul class="ing-list">${ing}</ul>
+            </div>
+            <div class="panel">
+              <h3>Zubereitung</h3>
+              <ol class="step-list">${steps}</ol>
+            </div>
+          </section>
+
+          <div class="poster-footer">
+            <div class="mini">Rezept ${state.currentIndex+1} von ${state.recipes.length}</div>
+            <div class="mini">${isFavorite(recipe.id)?'Als Favorit gespeichert':'Noch nicht favorisiert'}</div>
+          </div>
+        </article>
+
+        <div class="controls">
+          <div class="nav-group">
+            <button class="nav-btn" id="prevBtn">← Vorheriges Rezept</button>
+            <button class="nav-btn" id="nextBtn">Nächstes Rezept →</button>
+          </div>
+          <div class="utility-group">
+            <button class="primary-btn" id="randomBtn">Zufallsrezept</button>
+            <div class="secondary-info">${recipe.title}</div>
+          </div>
+        </div>
+      </main>
+    </div>
+  `;
+}
+function toggleFavorite(){
+  const recipe=state.recipes[state.currentIndex];
+  if(isFavorite(recipe.id)){ state.favorites.delete(recipe.id); showToast('Favorit entfernt'); }
+  else { state.favorites.add(recipe.id); showToast('Zu Favoriten hinzugefügt'); }
+  localStorage.setItem(STORAGE_KEYS.favorites, JSON.stringify(Array.from(state.favorites)));
+  render();
+}
+async function shareRecipe(){
+  const recipe=state.recipes[state.currentIndex];
+  const url=location.href;
+  const shareData={title:recipe.title,text:`${recipe.title} · ${recipe.protein} g Protein · ${recipe.kcal} kcal`,url};
+  if(navigator.share){
+    try{ await navigator.share(shareData); return; }
+    catch(err){ if(err && err.name==='AbortError') return; }
+  }
+  try{ await navigator.clipboard.writeText(url); showToast('Link zum Rezept kopiert'); }
+  catch(err){ showToast('Teilen im Browser nicht verfügbar'); }
+}
+function renderRecipeList(){
+  const recipe=state.recipes[state.currentIndex];
+  const rows=state.recipes.map(item=>`
+    <button class="recipe-link ${item.id===recipe.id?'active':''}" data-open-recipe="${item.index}" style="--accent:${item.accent}">
+      <div class="recipe-link-main">
+        ${recipeImageTag(item.id, "", "recipe-thumb")}
+        <div class="recipe-text"><div>${item.title}</div><small>${item.category} · ${item.time}</small></div>
+      </div>
+      <div class="favorite-star">${isFavorite(item.id)?'★':'☆'}</div>
+    </button>
+  `).join('');
+  els.drawerList.innerHTML=rows||'<div class="empty-hint">Keine Rezepte gefunden.</div>';
+}
+function openDrawer(){ els.drawerBackdrop.classList.add('open'); els.drawer.classList.add('open'); }
+function closeDrawer(){ els.drawerBackdrop.classList.remove('open'); els.drawer.classList.remove('open'); }
+function bindEvents(){
+  document.getElementById('prevBtn')?.addEventListener('click',()=>setCurrentRecipe(state.currentIndex-1));
+  document.getElementById('nextBtn')?.addEventListener('click',()=>setCurrentRecipe(state.currentIndex+1));
+  document.getElementById('randomBtn')?.addEventListener('click',()=>{
+    if(state.recipes.length<2){ showToast('Nur ein Rezept vorhanden'); return; }
+    let next=state.currentIndex;
+    while(next===state.currentIndex){ next=Math.floor(Math.random()*state.recipes.length); }
+    setCurrentRecipe(next);
+  });
+  document.getElementById('favoriteBtn')?.addEventListener('click',toggleFavorite);
+  document.getElementById('shareBtn')?.addEventListener('click',shareRecipe);
+  document.getElementById('openRecipesBtn')?.addEventListener('click',openDrawer);
+  document.getElementById('closeDrawerBtn')?.addEventListener('click',closeDrawer);
+  els.drawerBackdrop.addEventListener('click',closeDrawer);
+  els.drawerList.querySelectorAll('[data-open-recipe]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const index=Number(btn.getAttribute('data-open-recipe'));
+      closeDrawer(); setCurrentRecipe(index);
+    });
+  });
+}
+function render(){
+  const recipe=state.recipes[state.currentIndex];
+  document.title=`${recipe.title} · Fitnessrezepte App`;
+  els.app.innerHTML=recipePoster(recipe);
+  renderRecipeList();
+  bindEvents();
+}
+function registerServiceWorker(){
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',()=>{ navigator.serviceWorker.register('./service-worker.js').catch(()=>{}); });
+  }
+}
+window.addEventListener('hashchange',()=>{
+  const target=getRecipeByHash();
+  if(target) setCurrentRecipe(target.index,false);
+});
+restoreInitialRecipe(); render(); registerServiceWorker();
+</script>
+</body>
+</html>

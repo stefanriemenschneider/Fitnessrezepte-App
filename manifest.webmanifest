@@ -1,0 +1,30 @@
+{
+  "name": "Fit Coaching Rezepte",
+  "short_name": "Fit Rezepte",
+  "description": "Virtuelle Fitnessrezepte mit Favoriten, Teilen und Rezeptübersicht.",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f5f7fb",
+  "theme_color": "#1f2a44",
+  "lang": "de",
+  "icons": [
+    {
+      "src": "./icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
