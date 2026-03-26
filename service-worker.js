@@ -1,4 +1,4 @@
-const CACHE_NAME='fitnessrezepte-app-v7-unified-premium';
+const CACHE_NAME='fitnessrezepte-app-v8-final-cottage';
 const URLS=[
   './',
   './index.html',
