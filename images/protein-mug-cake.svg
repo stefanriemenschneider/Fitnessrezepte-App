@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" role="img" aria-label="Protein Mug Cake">
+      
+    <defs>
+      <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#f783ac"/>
+        <stop offset="58%" stop-color="#f8c291"/>
+        <stop offset="100%" stop-color="#fff9f0"/>
+      </linearGradient>
+      <radialGradient id="glow1" cx=".18" cy=".2" r=".5">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity=".9"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+      </radialGradient>
+      <radialGradient id="glow2" cx=".82" cy=".88" r=".45">
+        <stop offset="0%" stop-color="#ffffff" stop-opacity=".62"/>
+        <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+      </radialGradient>
+      
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="18" flood-color="#1e2a42" flood-opacity=".18"/>
+    </filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#1e2a42" flood-opacity=".12"/>
+    </filter>
+    
+    </defs>
+    <rect width="1200" height="900" rx="52" fill="url(#bg)"/>
+    <rect width="1200" height="900" fill="url(#glow1)"/>
+    <rect width="1200" height="900" fill="url(#glow2)"/>
+    <g opacity=".12">
+      <circle cx="1010" cy="140" r="140" fill="#ffffff"/>
+      <circle cx="130" cy="720" r="180" fill="#ffffff"/>
+    </g>
+    
+      
+    <g transform="translate(64 52)">
+  <rect x="0" y="0" rx="24" ry="24" width="340" height="98" fill="#ffffffd8" stroke="#ffffff" />
+  <image href="../brand/logo-fit-coaching.png" x="16" y="10" width="308" height="76" preserveAspectRatio="xMinYMin meet"/>
+</g>
+    <text x="78" y="840" font-size="36" font-family="Inter,Arial,sans-serif" font-weight="900" fill="#1f2a44">Protein Mug Cake</text>
+    
+      <g transform="translate(495 230)" filter="url(#shadow)">
+          <rect x="0" y="130" width="270" height="228" rx="36" fill="#f9f2ee"/>
+          <path d="M218 160c58 0 100 40 100 92s-40 92-96 92" fill="none" stroke="#f9f2ee" stroke-width="28"/>
+          <path d="M20 178c42-24 178-24 224 2 20 12 30 44 18 64-18 28-216 38-244 8-18-18-18-54 2-74z" fill="#6a3f2d"/>
+          <path d="M12 230c54 14 160 12 246 0v100c0 22-18 40-40 40H54c-22 0-42-18-42-40z" fill="#f9f2ee"/>
+          <path d="M26 232c56 14 152 12 220 0v88H26z" fill="#7c4a37"/>
+          <path d="M80 120c40-26 108-26 148 0" fill="none" stroke="#ffffffd9" stroke-width="16" stroke-linecap="round"/>
+          <circle cx="96" cy="270" r="12" fill="#ffd17f"/><circle cx="136" cy="288" r="10" fill="#ffd17f"/><circle cx="180" cy="272" r="10" fill="#ffd17f"/>
+        </g>
+        
+    <g opacity=".92">
+      <circle cx="1010" cy="660" r="15" fill="#a7e163"/>
+      <circle cx="1035" cy="640" r="10" fill="#7bc96f"/>
+      <circle cx="995" cy="635" r="10" fill="#7bc96f"/>
+      <ellipse cx="315" cy="700" rx="26" ry="10" fill="#8bc34a" transform="rotate(-16 315 700)"/>
+      <ellipse cx="343" cy="680" rx="22" ry="9" fill="#8bc34a" transform="rotate(24 343 680)"/>
+    </g>
+    
+    </svg>
