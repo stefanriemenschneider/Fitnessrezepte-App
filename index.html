@@ -4,110 +4,263 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="theme-color" content="#1f2a44" />
-  <meta name="description" content="Virtuelle Fitnessrezepte App mit Favoriten, Teilen und Rezeptliste." />
+  <meta name="description" content="Virtuelle Fitnessrezepte App mit 24 Rezepten, Favoriten, Story-Export und Rezeptliste." />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./icons/favicon.png" type="image/png" />
   <title>Fitnessrezepte App</title>
   <style>
-:root{
-  --bg:#f5f7fb;
-  --panel:#ffffffcc;
-  --panel-solid:#ffffff;
-  --text:#172033;
-  --muted:#62708d;
-  --line:#dbe3f0;
-  --shadow:0 20px 50px rgba(25,36,64,.12);
-  --radius:26px;
-}
-*{box-sizing:border-box}
-html,body{margin:0;padding:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;background:
-radial-gradient(circle at top left, #ffffff 0%, #eef4ff 30%, #f5f7fb 100%);color:var(--text);min-height:100%;}
-body{padding:18px 14px 30px}
-button{font:inherit;border:none;cursor:pointer}
-.app-shell{max-width:900px;margin:0 auto}
-.topbar{display:flex;align-items:center;gap:12px;justify-content:space-between;margin-bottom:16px;}
-.brand{display:flex;align-items:center;gap:14px;min-width:0;}
-.brand-logo{display:block;height:56px;width:auto;max-width:min(48vw,320px);object-fit:contain;filter:drop-shadow(0 8px 18px rgba(20,30,60,.08));}
-.brand-copy{min-width:0}
-.brand h1{margin:0;font-size:1.1rem;line-height:1.1}
-.brand p{margin:2px 0 0;color:var(--muted);font-size:.9rem}
-.action-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
-.chip-btn,.icon-btn,.nav-btn,.primary-btn{background:var(--panel-solid);color:var(--text);border:1px solid var(--line);box-shadow:0 10px 20px rgba(20,30,60,.06);}
-.chip-btn{padding:12px 16px;border-radius:16px;font-weight:700;}
-.icon-btn{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;font-size:1.1rem;}
-.stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;}
-.stat-card{background:var(--panel);backdrop-filter:blur(10px);border:1px solid #ffffff80;border-radius:20px;padding:12px 14px;box-shadow:var(--shadow);}
-.stat-card .label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-.stat-card .value{margin-top:4px;font-size:1rem;font-weight:800}
-.recipe-stage{position:relative;background:var(--panel);backdrop-filter:blur(12px);border:1px solid #ffffff90;border-radius:34px;box-shadow:var(--shadow);padding:14px;}
-.poster{position:relative;overflow:hidden;min-height:640px;border-radius:28px;padding:22px;background:
-radial-gradient(circle at 15% 10%, color-mix(in srgb, var(--accent) 50%, white) 0%, transparent 30%),
-radial-gradient(circle at 85% 15%, color-mix(in srgb, var(--accent) 36%, white) 0%, transparent 28%),
-linear-gradient(160deg, color-mix(in srgb, var(--accent) 20%, white) 0%, #ffffff 46%, #f5f7fb 100%);
-display:flex;flex-direction:column;gap:14px;}
-.poster::before,.poster::after{content:"";position:absolute;border-radius:999px;filter:blur(8px);opacity:.55;pointer-events:none;}
-.poster::before{width:220px;height:220px;right:-50px;bottom:60px;background:color-mix(in srgb, var(--accent) 58%, white)}
-.poster::after{width:180px;height:180px;left:-40px;top:120px;background:color-mix(in srgb, var(--accent) 36%, white)}
-.poster-top{position:relative;z-index:1;display:flex;justify-content:space-between;gap:14px;align-items:flex-start;flex-wrap:wrap;}
-.poster-brand{background:#ffffffcf;border:1px solid #ffffff;backdrop-filter:blur(10px);border-radius:22px;padding:10px 12px;display:flex;align-items:center;justify-content:center;min-width:190px;box-shadow:0 12px 24px rgba(20,30,60,.06);}
-.poster-brand img{display:block;width:100%;max-width:210px;height:auto;object-fit:contain;}
-.poster-hero{position:relative;z-index:1;overflow:hidden;border-radius:26px;padding:10px;background:#ffffffdc;border:1px solid #ffffff;box-shadow:0 12px 24px rgba(20,30,60,.05);}
-.poster-hero img{display:block;width:100%;height:clamp(300px,42vw,420px);object-fit:cover;border-radius:20px;}
-.recipe-link-main{display:flex;align-items:center;gap:12px;min-width:0;flex:1;}
-.recipe-thumb{width:62px;height:62px;border-radius:16px;object-fit:cover;background:#f1f5fb;border:1px solid #e6edf8;flex:0 0 auto;}
-.recipe-text{min-width:0;}
-.recipe-text div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.badge-row{display:flex;flex-wrap:wrap;gap:8px}
-.badge{background:#ffffffcf;border:1px solid #ffffff;backdrop-filter:blur(10px);border-radius:999px;padding:8px 12px;font-size:.82rem;font-weight:700;color:#33405e;}
-.recipe-title{margin:0;font-size:clamp(1.8rem,5vw,2.7rem);line-height:.96;max-width:520px;}
-.recipe-sub{margin-top:8px;color:#44526f;font-weight:600}
-.macro-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-.macro{background:#ffffffd6;border:1px solid #ffffff;padding:12px;border-radius:18px;}
-.macro .k{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
-.macro .v{margin-top:4px;font-size:1.15rem;font-weight:800}
-.content-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;}
-.panel{background:#ffffffdc;border:1px solid #ffffff;border-radius:22px;padding:18px;display:flex;flex-direction:column;}
-.panel h3{margin:0 0 12px;font-size:1.02rem}
-.ing-list,.step-list{margin:0;padding:0;list-style:none;display:grid;gap:10px}
-.ing-list li,.step-list li{display:flex;gap:10px;align-items:flex-start;color:#24314d;font-weight:600;line-height:1.35;}
-.dot,.step-no{flex:0 0 auto;width:24px;height:24px;border-radius:999px;display:grid;place-items:center;font-size:.82rem;background:color-mix(in srgb, var(--accent) 28%, white);color:#1e2a42;font-weight:800;}
-.poster-footer{position:relative;z-index:1;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;color:#42506c;font-size:.92rem;font-weight:600;}
-.poster-footer .mini{opacity:.9}
-.controls{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:14px;flex-wrap:wrap;}
-.nav-group,.utility-group{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.nav-btn,.primary-btn{padding:13px 18px;border-radius:16px;font-weight:800;}
-.primary-btn{background:linear-gradient(135deg,#1f2a44,#2f5fff);color:#fff;border:none;}
-.secondary-info{color:var(--muted);font-weight:700;}
-.drawer-backdrop{position:fixed;inset:0;background:rgba(10,16,30,.36);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:.25s;}
-.drawer-backdrop.open{opacity:1;pointer-events:auto}
-.drawer{position:fixed;top:0;right:0;width:min(92vw,420px);height:100%;background:#f9fbff;box-shadow:-20px 0 50px rgba(10,16,30,.18);padding:18px;transform:translateX(102%);transition:.28s;display:flex;flex-direction:column;gap:14px;}
-.drawer.open{transform:translateX(0)}
-.drawer-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
-.drawer-head h2{margin:0;font-size:1.15rem}
-.recipe-list{display:grid;gap:10px;overflow:auto;padding-bottom:24px}
-.recipe-link{width:100%;text-align:left;padding:14px;border-radius:18px;background:#fff;border:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:800;color:var(--text);}
-.recipe-link small{display:block;color:var(--muted);font-weight:700;margin-top:4px}
-.recipe-link.active{border-color:color-mix(in srgb, var(--accent) 40%, #a9b6d3);box-shadow:0 14px 32px rgba(30,40,70,.08);}
-.favorite-star{font-size:1.05rem}
-.toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(24px);background:#192440;color:#fff;padding:12px 16px;border-radius:16px;font-weight:700;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.22s;}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.empty-hint{color:var(--muted);font-weight:600;margin-top:6px}
-@media (max-width:720px){
-  body{padding:12px 10px 24px}
-  .topbar{align-items:flex-start;flex-direction:column}
-  .action-row{width:100%;justify-content:flex-start}
-  .brand-logo{max-width:min(70vw,320px);height:48px}
-  .stats-strip{grid-template-columns:repeat(2,1fr)}
-  .macro-grid,.content-grid{grid-template-columns:1fr 1fr}
-  .poster{min-height:unset}
-}
-@media (max-width:560px){
-  .macro-grid,.content-grid{grid-template-columns:1fr}
-  .controls{align-items:stretch}
-  .nav-group,.utility-group{width:100%}
-  .nav-btn,.primary-btn{flex:1}
-}
-</style>
+    :root{
+      --bg:#f3f5fa;
+      --bg-2:#eef2fb;
+      --panel:rgba(255,255,255,.82);
+      --panel-strong:rgba(255,255,255,.92);
+      --panel-solid:#ffffff;
+      --text:#182033;
+      --muted:#62708d;
+      --line:#dfe6f3;
+      --line-strong:#ccd6e8;
+      --brand:#ef9b20;
+      --brand-soft:#fff1d8;
+      --navy:#1f2a44;
+      --shadow:0 20px 55px rgba(20,30,55,.10);
+      --shadow-soft:0 10px 24px rgba(20,30,55,.07);
+      --radius-xl:34px;
+      --radius-lg:24px;
+      --radius-md:18px;
+      --radius-sm:14px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;min-height:100%}
+    body{
+      font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 0% 0%, rgba(239,155,32,.11), transparent 22%),
+        radial-gradient(circle at 100% 0%, rgba(80,120,255,.10), transparent 18%),
+        linear-gradient(180deg, #f7f9fe 0%, #eef3fb 42%, #f3f5fa 100%);
+      padding:18px 14px 34px;
+    }
+    body::before,body::after{
+      content:"";
+      position:fixed;
+      inset:auto;
+      z-index:-1;
+      width:320px;height:320px;border-radius:999px;filter:blur(70px);opacity:.25;pointer-events:none;
+    }
+    body::before{top:-80px;right:-40px;background:rgba(239,155,32,.32)}
+    body::after{left:-90px;bottom:80px;background:rgba(92,128,255,.22)}
+    img{max-width:100%}
+    button,input{font:inherit}
+    button{border:none;cursor:pointer}
+    .app-shell{max-width:1040px;margin:0 auto}
+    .header-card{
+      background:var(--panel);
+      backdrop-filter:blur(18px);
+      border:1px solid rgba(255,255,255,.75);
+      border-radius:28px;
+      padding:16px 18px;
+      box-shadow:var(--shadow);
+      margin-bottom:16px;
+    }
+    .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+    .brand{display:flex;align-items:center;gap:16px;min-width:0;flex:1}
+    .brand-logo{display:block;height:62px;width:auto;max-width:min(46vw,340px);object-fit:contain;filter:drop-shadow(0 10px 22px rgba(20,30,55,.08))}
+    .brand-copy{min-width:0}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;background:var(--brand-soft);color:#8f5a00;font-size:.74rem;font-weight:800;letter-spacing:.03em;text-transform:uppercase;margin-bottom:8px}
+    .eyebrow-dot{width:7px;height:7px;border-radius:999px;background:var(--brand)}
+    .brand h1{margin:0;font-size:clamp(1.08rem,2.5vw,1.42rem);line-height:1.04}
+    .brand-meta{margin-top:6px;color:var(--muted);font-size:.92rem;font-weight:600}
+    .action-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .chip-btn,.icon-btn,.nav-btn,.primary-btn,.ghost-btn,.sheet-btn,.filter-chip{
+      border:1px solid var(--line);
+      background:var(--panel-solid);
+      color:var(--text);
+      box-shadow:var(--shadow-soft);
+      transition:transform .16s ease, box-shadow .16s ease, border-color .16s ease, background .16s ease;
+    }
+    .chip-btn:hover,.icon-btn:hover,.nav-btn:hover,.primary-btn:hover,.ghost-btn:hover,.sheet-btn:hover,.filter-chip:hover{transform:translateY(-1px);box-shadow:0 14px 28px rgba(20,30,55,.10)}
+    .chip-btn{padding:13px 18px;border-radius:16px;font-weight:800}
+    .icon-btn{width:50px;height:50px;border-radius:16px;display:grid;place-items:center;font-size:1.08rem;font-weight:900}
+    .icon-btn.active{background:linear-gradient(135deg,var(--brand),#ffc65e);border-color:#f1b042;color:#fff}
+    .stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+    .stat-card{
+      background:var(--panel);
+      backdrop-filter:blur(16px);
+      border:1px solid rgba(255,255,255,.78);
+      border-radius:22px;
+      padding:14px 16px;
+      box-shadow:var(--shadow);
+    }
+    .stat-card .label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .stat-card .value{margin-top:6px;font-size:1.05rem;font-weight:900}
+    .recipe-stage{
+      position:relative;
+      background:var(--panel);
+      backdrop-filter:blur(16px);
+      border:1px solid rgba(255,255,255,.82);
+      border-radius:34px;
+      box-shadow:var(--shadow);
+      padding:14px;
+    }
+    .poster{
+      position:relative;
+      overflow:hidden;
+      border-radius:30px;
+      padding:22px;
+      min-height:650px;
+      background:
+        radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--accent) 18%, #fff) 0%, transparent 30%),
+        radial-gradient(circle at 84% 12%, color-mix(in srgb, var(--accent) 26%, #fff) 0%, transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,.95) 0%, rgba(248,250,255,.95) 100%);
+      border:1px solid rgba(255,255,255,.85);
+    }
+    .poster::before,.poster::after{
+      content:"";
+      position:absolute;
+      border-radius:999px;
+      filter:blur(16px);
+      opacity:.45;
+      pointer-events:none;
+    }
+    .poster::before{width:220px;height:220px;right:-60px;top:-40px;background:color-mix(in srgb, var(--accent) 65%, white)}
+    .poster::after{width:180px;height:180px;left:-40px;bottom:70px;background:color-mix(in srgb, var(--accent) 35%, white)}
+    .poster-top{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:16px;align-items:start;margin-bottom:14px}
+    .poster-brand{
+      min-width:240px;
+      background:rgba(255,255,255,.88);
+      border:1px solid rgba(255,255,255,.95);
+      border-radius:24px;
+      padding:12px 14px;
+      box-shadow:var(--shadow-soft);
+    }
+    .poster-brand img{display:block;width:100%;max-width:220px;height:auto;margin:0 auto}
+    .badge-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+    .badge{
+      display:inline-flex;align-items:center;
+      background:rgba(255,255,255,.88);
+      border:1px solid rgba(255,255,255,.95);
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:.82rem;
+      font-weight:800;
+      color:#34415f;
+      box-shadow:0 8px 18px rgba(20,30,55,.05);
+    }
+    .recipe-title{margin:0;font-size:clamp(2rem,5vw,3rem);line-height:.95;letter-spacing:-.03em;max-width:640px}
+    .recipe-sub{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px;color:#4b5872;font-weight:700}
+    .recipe-sub span{display:inline-flex;align-items:center;gap:8px}
+    .recipe-sub span+span::before{content:"•";color:#9ca7bf}
+    .poster-hero{
+      position:relative;z-index:1;overflow:hidden;border-radius:28px;padding:12px;
+      background:rgba(255,255,255,.86);
+      border:1px solid rgba(255,255,255,.95);
+      box-shadow:var(--shadow-soft);
+    }
+    .poster-hero img{display:block;width:100%;height:clamp(320px,43vw,470px);object-fit:cover;border-radius:22px}
+    .macro-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
+    .macro{background:rgba(255,255,255,.88);border:1px solid rgba(255,255,255,.95);padding:14px;border-radius:18px;box-shadow:0 8px 18px rgba(20,30,55,.04)}
+    .macro .k{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+    .macro .v{margin-top:4px;font-size:1.18rem;font-weight:900}
+    .content-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+    .panel{background:rgba(255,255,255,.88);border:1px solid rgba(255,255,255,.95);border-radius:24px;padding:18px 18px 20px;box-shadow:0 8px 18px rgba(20,30,55,.04)}
+    .panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+    .panel h3{margin:0;font-size:1.02rem}
+    .panel-tag{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#8b98b0}
+    .ing-list,.step-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+    .ing-list li,.step-list li{display:flex;gap:10px;align-items:flex-start;line-height:1.42;color:#24314d;font-weight:650}
+    .dot,.step-no{flex:0 0 auto;width:24px;height:24px;border-radius:999px;display:grid;place-items:center;font-size:.8rem;font-weight:900;color:var(--navy);background:color-mix(in srgb, var(--accent) 24%, #fff)}
+    .poster-footer{position:relative;z-index:1;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-top:14px;color:#4b5872;font-size:.92rem;font-weight:700}
+    .poster-footer .mini{display:inline-flex;align-items:center;gap:8px}
+    .poster-footer .mini strong{color:var(--navy)}
+    .controls{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px}
+    .nav-group,.utility-group{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .nav-btn,.primary-btn,.ghost-btn{padding:13px 18px;border-radius:16px;font-weight:800}
+    .primary-btn{background:linear-gradient(135deg,var(--navy),#375eff);color:#fff;border:none}
+    .ghost-btn{background:#fff8ed;border-color:#ffe1ad;color:#8f5a00}
+    .secondary-info{padding:0 4px;color:var(--muted);font-weight:800}
+    .drawer-backdrop,.share-backdrop{
+      position:fixed;inset:0;background:rgba(12,18,34,.42);backdrop-filter:blur(8px);
+      opacity:0;pointer-events:none;transition:.24s ease;z-index:20;
+    }
+    .drawer-backdrop.open,.share-backdrop.open{opacity:1;pointer-events:auto}
+    .drawer{
+      position:fixed;top:0;right:0;width:min(92vw,430px);height:100%;
+      background:linear-gradient(180deg,#f9fbff 0%, #f2f6ff 100%);
+      border-left:1px solid rgba(255,255,255,.9);
+      box-shadow:-24px 0 60px rgba(12,18,34,.18);
+      padding:18px;transform:translateX(102%);transition:.28s ease;display:flex;flex-direction:column;gap:14px;z-index:21;
+    }
+    .drawer.open{transform:translateX(0)}
+    .drawer-head,.share-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+    .drawer-head h2,.share-head h2{margin:0;font-size:1.16rem}
+    .drawer-search{
+      width:100%;padding:13px 15px;border-radius:16px;border:1px solid var(--line-strong);outline:none;
+      background:#fff;box-shadow:inset 0 1px 0 rgba(255,255,255,.7);
+    }
+    .filter-row{display:flex;gap:8px;flex-wrap:wrap}
+    .filter-chip{padding:9px 12px;border-radius:999px;font-size:.84rem;font-weight:800}
+    .filter-chip.active{background:linear-gradient(135deg,var(--navy),#304d95);color:#fff;border-color:transparent}
+    .recipe-list{display:grid;gap:14px;overflow:auto;padding-bottom:24px}
+    .drawer-group{display:grid;gap:10px}
+    .drawer-group-title{font-size:.82rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#7b88a2;padding:0 4px}
+    .recipe-link{
+      width:100%;text-align:left;padding:12px;border-radius:20px;background:#fff;border:1px solid var(--line);
+      display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:850;color:var(--text);
+    }
+    .recipe-link.active{border-color:color-mix(in srgb, var(--accent) 44%, #abb9d7);box-shadow:0 16px 30px rgba(20,30,55,.08)}
+    .recipe-link-main{display:flex;align-items:center;gap:12px;min-width:0;flex:1}
+    .recipe-thumb{width:64px;height:64px;border-radius:16px;object-fit:cover;background:#f1f5fb;border:1px solid #e7edf8;flex:0 0 auto}
+    .recipe-text{min-width:0}
+    .recipe-text div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .recipe-text small{display:block;color:var(--muted);font-weight:700;margin-top:4px}
+    .favorite-star{font-size:1.08rem}
+    .share-sheet{
+      position:fixed;left:50%;bottom:14px;transform:translateX(-50%) translateY(18px);
+      width:min(94vw,520px);background:linear-gradient(180deg,#fcfdff 0%, #f4f7ff 100%);
+      border:1px solid rgba(255,255,255,.95);border-radius:28px;padding:18px;box-shadow:0 24px 60px rgba(12,18,34,.22);
+      opacity:0;pointer-events:none;transition:.24s ease;z-index:22;
+    }
+    .share-sheet.open{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+    .share-copy{color:var(--muted);font-weight:650;margin:4px 0 0}
+    .sheet-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+    .sheet-btn{padding:15px 14px;border-radius:18px;font-weight:850;text-align:left}
+    .sheet-btn strong{display:block;font-size:.98rem}
+    .sheet-btn small{display:block;margin-top:4px;color:var(--muted);font-weight:700;line-height:1.35}
+    .sheet-btn.primary{background:linear-gradient(135deg,#1f2a44,#2f5fff);color:#fff;border:none}
+    .sheet-btn.primary small{color:rgba(255,255,255,.82)}
+    .sheet-note{margin-top:12px;color:#7b88a2;font-size:.8rem;line-height:1.45}
+    .toast{
+      position:fixed;left:50%;bottom:18px;transform:translateX(-50%) translateY(24px);
+      background:#192440;color:#fff;padding:12px 16px;border-radius:16px;font-weight:800;
+      box-shadow:0 18px 40px rgba(12,18,34,.28);opacity:0;pointer-events:none;transition:.22s ease;z-index:30;
+    }
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+    .empty-hint{color:var(--muted);font-weight:650;margin-top:4px}
+    @media (max-width:900px){
+      .poster-top{grid-template-columns:1fr}
+      .poster-brand{min-width:unset;max-width:320px}
+    }
+    @media (max-width:720px){
+      body{padding:12px 10px 28px}
+      .brand{flex-direction:column;align-items:flex-start}
+      .brand-logo{height:52px;max-width:min(74vw,320px)}
+      .topbar{align-items:flex-start}
+      .action-row{width:100%;justify-content:flex-start}
+      .stats-strip{grid-template-columns:repeat(2,1fr)}
+      .content-grid,.macro-grid{grid-template-columns:1fr 1fr}
+      .sheet-grid{grid-template-columns:1fr}
+    }
+    @media (max-width:560px){
+      .content-grid,.macro-grid{grid-template-columns:1fr}
+      .controls{align-items:stretch}
+      .nav-group,.utility-group{width:100%}
+      .nav-btn,.primary-btn,.ghost-btn{flex:1}
+      .poster{padding:18px}
+      .recipe-title{font-size:clamp(1.9rem,9vw,2.5rem)}
+      .share-sheet{left:10px;right:10px;width:auto;transform:translateY(18px)}
+      .share-sheet.open{transform:translateY(0)}
+    }
+  </style>
 </head>
 <body>
   <div id="app"></div>
@@ -118,9 +271,41 @@ display:flex;flex-direction:column;gap:14px;}
       <h2>Rezepte</h2>
       <button class="icon-btn" id="closeDrawerBtn" aria-label="Schließen">×</button>
     </div>
+    <input class="drawer-search" id="drawerSearch" type="search" placeholder="Rezept suchen ..." aria-label="Rezept suchen" />
+    <div class="filter-row" id="filterRow"></div>
     <div class="empty-hint">Wähle ein Rezept aus der Liste.</div>
     <div class="recipe-list" id="recipeList"></div>
   </aside>
+
+  <div class="share-backdrop" id="shareBackdrop" aria-hidden="true"></div>
+  <section class="share-sheet" id="shareSheet" aria-label="Rezept teilen">
+    <div class="share-head">
+      <div>
+        <h2>Rezept teilen</h2>
+        <p class="share-copy">Als Link oder als Story-Bild im 9:16-Format.</p>
+      </div>
+      <button class="icon-btn" id="closeShareBtn" aria-label="Schließen">×</button>
+    </div>
+    <div class="sheet-grid">
+      <button class="sheet-btn primary" id="shareStoryBtn">
+        <strong>Story teilen</strong>
+        <small>Erstellt ein Story-Bild und öffnet auf kompatiblen Mobilgeräten das Teilen-Menü.</small>
+      </button>
+      <button class="sheet-btn" id="downloadStoryBtn">
+        <strong>Story-Bild speichern</strong>
+        <small>Speichert das aktuelle Rezept als 9:16-Bild für Instagram Stories.</small>
+      </button>
+      <button class="sheet-btn" id="shareLinkBtn">
+        <strong>Link teilen</strong>
+        <small>Öffnet das native Teilen-Menü für den Rezept-Link.</small>
+      </button>
+      <button class="sheet-btn" id="copyLinkBtn">
+        <strong>Link kopieren</strong>
+        <small>Kopiert den Link zum aktuellen Rezept in die Zwischenablage.</small>
+      </button>
+    </div>
+    <div class="sheet-note">Tipp: Auf dem Smartphone funktioniert „Story teilen“ am besten über die veröffentlichte GitHub-Pages-Version.</div>
+  </section>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -469,33 +654,442 @@ display:flex;flex-direction:column;gap:14px;}
       "Mediterran",
       "Protein"
     ]
+  },
+  {
+    "id": "protein-griessbrei-beeren",
+    "title": "Protein-Grießbrei mit Beeren",
+    "category": "Frühstück",
+    "time": "10 Min.",
+    "kcal": 420,
+    "protein": 34,
+    "carbs": 42,
+    "fat": 10,
+    "accent": "#ffd8a8",
+    "ingredients": [
+      "50 g Weichweizengrieß",
+      "300 ml Mandelmilch ungesüßt",
+      "30 g Vanille-Proteinpulver",
+      "100 g gemischte Beeren",
+      "10 g Mandelmus",
+      "Etwas Zimt"
+    ],
+    "steps": [
+      "Mandelmilch aufkochen und Grieß einrühren.",
+      "Kurz quellen lassen, dann Proteinpulver unterrühren.",
+      "Mit Beeren, Mandelmus und Zimt servieren."
+    ],
+    "badges": [
+      "Frühstück",
+      "Warm",
+      "Protein"
+    ]
+  },
+  {
+    "id": "eier-avocado-toast-deluxe",
+    "title": "Eier-Avocado-Toast Deluxe",
+    "category": "Frühstück",
+    "time": "10 Min.",
+    "kcal": 450,
+    "protein": 28,
+    "carbs": 30,
+    "fat": 22,
+    "accent": "#8ce99a",
+    "ingredients": [
+      "2 Scheiben Vollkorntoast",
+      "3 Eier",
+      "1/2 Avocado",
+      "50 g Cherrytomaten",
+      "Etwas Zitronensaft",
+      "Salz & Pfeffer"
+    ],
+    "steps": [
+      "Toast rösten und Avocado mit Zitronensaft zerdrücken.",
+      "Eier nach Wunsch braten oder pochieren.",
+      "Toast belegen, Tomaten ergänzen und würzen."
+    ],
+    "badges": [
+      "Brunch",
+      "Healthy Fats",
+      "Easy"
+    ]
+  },
+  {
+    "id": "skyr-schoko-bananen-creme",
+    "title": "Skyr-Schoko-Bananen-Creme",
+    "category": "Snack",
+    "time": "5 Min.",
+    "kcal": 310,
+    "protein": 31,
+    "carbs": 26,
+    "fat": 8,
+    "accent": "#c92a2a",
+    "ingredients": [
+      "250 g Skyr",
+      "1 kleine Banane",
+      "10 g Backkakao",
+      "15 g Schoko-Proteinpulver",
+      "10 g Haselnüsse gehackt"
+    ],
+    "steps": [
+      "Skyr, Banane, Kakao und Protein cremig verrühren.",
+      "In eine Schüssel geben oder kurz mixen.",
+      "Mit Haselnüssen toppen und kalt genießen."
+    ],
+    "badges": [
+      "Sweet",
+      "Protein",
+      "Schnell"
+    ]
+  },
+  {
+    "id": "haehnchen-wrap-fitness",
+    "title": "Hähnchen-Wrap Fitness",
+    "category": "Lunch",
+    "time": "15 Min.",
+    "kcal": 480,
+    "protein": 42,
+    "carbs": 35,
+    "fat": 16,
+    "accent": "#74c0fc",
+    "ingredients": [
+      "1 großer Vollkorn-Wrap",
+      "150 g Hähnchenbrust",
+      "50 g Joghurt",
+      "30 g Blattsalat",
+      "50 g Gurke",
+      "50 g Paprika"
+    ],
+    "steps": [
+      "Hähnchen würzen, anbraten und in Streifen schneiden.",
+      "Wrap kurz erwärmen und mit Joghurt bestreichen.",
+      "Mit Gemüse füllen, einrollen und halbieren."
+    ],
+    "badges": [
+      "To Go",
+      "Lean",
+      "High Protein"
+    ]
+  },
+  {
+    "id": "thunfisch-reis-salat",
+    "title": "Thunfisch-Reis-Salat",
+    "category": "Lunch",
+    "time": "12 Min.",
+    "kcal": 460,
+    "protein": 38,
+    "carbs": 42,
+    "fat": 13,
+    "accent": "#66d9e8",
+    "ingredients": [
+      "120 g gekochter Reis",
+      "1 Dose Thunfisch im eigenen Saft",
+      "80 g Mais",
+      "80 g Gurke",
+      "50 g Tomaten",
+      "1 EL Olivenöl"
+    ],
+    "steps": [
+      "Reis, Thunfisch und Gemüse in eine Bowl geben.",
+      "Mit Olivenöl, Zitronensaft, Salz und Pfeffer würzen.",
+      "Kurz vermengen und kalt oder lauwarm servieren."
+    ],
+    "badges": [
+      "Meal Prep",
+      "Protein",
+      "Fresh"
+    ]
+  },
+  {
+    "id": "puten-bolognese-zucchini",
+    "title": "Puten-Bolognese mit Zucchini",
+    "category": "Dinner",
+    "time": "20 Min.",
+    "kcal": 430,
+    "protein": 44,
+    "carbs": 18,
+    "fat": 18,
+    "accent": "#ff8787",
+    "ingredients": [
+      "180 g Putenhackfleisch",
+      "1 kleine Zucchini",
+      "200 g passierte Tomaten",
+      "1/2 Zwiebel",
+      "1 TL Olivenöl",
+      "Knoblauch & Oregano"
+    ],
+    "steps": [
+      "Zwiebel und Knoblauch in Öl anschwitzen.",
+      "Putenhack anbraten und passierte Tomaten zugeben.",
+      "Zucchini einarbeiten, würzen und kurz garen."
+    ],
+    "badges": [
+      "Low Carb",
+      "Herzhaft",
+      "Protein"
+    ]
+  },
+  {
+    "id": "lachs-spinat-pasta-light",
+    "title": "Lachs-Spinat-Pasta Light",
+    "category": "Dinner",
+    "time": "20 Min.",
+    "kcal": 540,
+    "protein": 41,
+    "carbs": 44,
+    "fat": 21,
+    "accent": "#ffa94d",
+    "ingredients": [
+      "150 g Lachsfilet",
+      "70 g Vollkornnudeln",
+      "100 g Blattspinat",
+      "80 g Frischkäse light",
+      "1 Knoblauchzehe",
+      "Salz, Pfeffer, Muskat"
+    ],
+    "steps": [
+      "Nudeln garen und Lachs anbraten.",
+      "Spinat mit Knoblauch kurz dünsten und Frischkäse einrühren.",
+      "Alles mit den Nudeln vermengen und würzen."
+    ],
+    "badges": [
+      "Omega-3",
+      "Dinner",
+      "Creamy"
+    ]
+  },
+  {
+    "id": "quark-apfel-zimt-becher",
+    "title": "Quark-Apfel-Zimt-Becher",
+    "category": "Snack",
+    "time": "5 Min.",
+    "kcal": 280,
+    "protein": 29,
+    "carbs": 24,
+    "fat": 6,
+    "accent": "#ffd43b",
+    "ingredients": [
+      "250 g Magerquark",
+      "1 kleiner Apfel",
+      "1 TL Honig",
+      "Etwas Zimt",
+      "10 g Walnüsse"
+    ],
+    "steps": [
+      "Quark cremig rühren und in ein Glas oder eine Bowl geben.",
+      "Apfel klein schneiden und mit Honig darübergeben.",
+      "Mit Zimt und Walnüssen toppen."
+    ],
+    "badges": [
+      "Snack",
+      "Herbst",
+      "Protein"
+    ]
+  },
+  {
+    "id": "turkey-burger-bowl",
+    "title": "Turkey Burger Bowl",
+    "category": "Dinner",
+    "time": "18 Min.",
+    "kcal": 500,
+    "protein": 43,
+    "carbs": 32,
+    "fat": 20,
+    "accent": "#c0eb75",
+    "ingredients": [
+      "160 g Putenhack",
+      "200 g Kartoffeln",
+      "50 g Salat",
+      "50 g Tomaten",
+      "30 g Gewürzgurken",
+      "30 g Joghurt"
+    ],
+    "steps": [
+      "Kartoffeln knusprig garen und aus Putenhack kleine Patties formen.",
+      "Patties anbraten und Gemüse vorbereiten.",
+      "Mit Joghurt-Senf-Dip als Bowl servieren."
+    ],
+    "badges": [
+      "Burger Style",
+      "Lean",
+      "Dinner"
+    ]
+  },
+  {
+    "id": "protein-reispudding-mango",
+    "title": "Protein-Reispudding Mango",
+    "category": "Frühstück",
+    "time": "10 Min.",
+    "kcal": 390,
+    "protein": 30,
+    "carbs": 47,
+    "fat": 7,
+    "accent": "#ffd166",
+    "ingredients": [
+      "150 g gekochter Reis oder Milchreis",
+      "200 ml fettarme Milch",
+      "25 g Vanille-Proteinpulver",
+      "100 g Mango",
+      "Etwas Vanille oder Zimt"
+    ],
+    "steps": [
+      "Reis mit Milch erwärmen.",
+      "Kurz abkühlen lassen und Proteinpulver einrühren.",
+      "Mit Mango toppen und warm oder kalt servieren."
+    ],
+    "badges": [
+      "Frühstück",
+      "Sweet",
+      "Meal Prep"
+    ]
+  },
+  {
+    "id": "rinderhack-gemuese-pfanne",
+    "title": "Rinderhack-Gemüse-Pfanne",
+    "category": "Dinner",
+    "time": "18 Min.",
+    "kcal": 520,
+    "protein": 40,
+    "carbs": 20,
+    "fat": 28,
+    "accent": "#69db7c",
+    "ingredients": [
+      "180 g mageres Rinderhack",
+      "1 Zucchini",
+      "1 rote Paprika",
+      "100 g Champignons",
+      "1 TL Olivenöl",
+      "Paprika, Knoblauch, Salz, Pfeffer"
+    ],
+    "steps": [
+      "Rinderhack scharf anbraten.",
+      "Gemüse klein schneiden und mit in die Pfanne geben.",
+      "Würzen und bissfest garen."
+    ],
+    "badges": [
+      "Pfanne",
+      "Herzhaft",
+      "Protein"
+    ]
+  },
+  {
+    "id": "baked-oats-cheesecake-style",
+    "title": "Baked Oats Cheesecake Style",
+    "category": "Frühstück",
+    "time": "25 Min.",
+    "kcal": 430,
+    "protein": 33,
+    "carbs": 40,
+    "fat": 14,
+    "accent": "#f783ac",
+    "ingredients": [
+      "50 g Haferflocken",
+      "1 Ei",
+      "100 g Magerquark",
+      "20 g Vanille-Proteinpulver",
+      "1/2 Banane",
+      "50 g Beeren"
+    ],
+    "steps": [
+      "Alle Zutaten außer den Beeren verrühren oder mixen.",
+      "In eine kleine Form geben und Beeren darüberstreuen.",
+      "Bei 180 °C etwa 20 Min. backen."
+    ],
+    "badges": [
+      "Baked",
+      "Cheesecake",
+      "Protein"
+    ]
   }
 ];</script>
+
   <script>
 const STORAGE_KEYS={favorites:'fitRecipesFavorites',lastRecipe:'fitRecipesLastRecipe'};
-const state={recipes:(window.RECIPE_DATA||[]).map((item,index)=>({...item,index})),currentIndex:0,favorites:new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.favorites)||'[]'))};
-const els={app:document.getElementById('app'),drawerBackdrop:document.getElementById('drawerBackdrop'),drawer:document.getElementById('recipeDrawer'),drawerList:document.getElementById('recipeList'),toast:document.getElementById('toast')};
-const ASSET_VERSION='v9-20260326';
+const CATEGORY_META={
+  'Frühstück':{label:'Frühstück',order:1},
+  'Snack':{label:'Snack',order:2},
+  'Lunch':{label:'Mittagessen',order:3},
+  'Mittagessen':{label:'Mittagessen',order:3},
+  'Dinner':{label:'Abendessen',order:4},
+  'Abendessen':{label:'Abendessen',order:4}
+};
+const CATEGORY_ORDER=['Alle','Frühstück','Snack','Mittagessen','Abendessen'];
+const state={
+  recipes:[],
+  currentIndex:0,
+  favorites:new Set(JSON.parse(localStorage.getItem(STORAGE_KEYS.favorites)||'[]')),
+  filterText:'',
+  categoryFilter:'Alle'
+};
+const els={
+  app:document.getElementById('app'),
+  drawerBackdrop:document.getElementById('drawerBackdrop'),
+  drawer:document.getElementById('recipeDrawer'),
+  drawerList:document.getElementById('recipeList'),
+  drawerSearch:document.getElementById('drawerSearch'),
+  filterRow:document.getElementById('filterRow'),
+  shareBackdrop:document.getElementById('shareBackdrop'),
+  shareSheet:document.getElementById('shareSheet'),
+  toast:document.getElementById('toast')
+};
+const ASSET_VERSION='v12-20260328-style-story-sort';
 const RECIPE_IMAGES={};
 function assetUrl(path){ return `${path}?v=${ASSET_VERSION}`; }
-function getRecipeImage(id){
-  return RECIPE_IMAGES[id]||{src:assetUrl(`./images/${id}.jpg`),fallback:assetUrl(`./images/${id}.jpg`)};
+function categoryMeta(category){ return CATEGORY_META[category] || {label:category||'Rezept', order:99}; }
+function displayCategory(category){ return categoryMeta(category).label; }
+function normalizeForSort(recipe){
+  return {
+    ...recipe,
+    categoryLabel:displayCategory(recipe.category),
+    categoryOrder:categoryMeta(recipe.category).order
+  };
 }
-
-function recipeImageTag(id,alt='',className=''){
-  const image=getRecipeImage(id);
-  return `<img ${className?`class="${className}" `:''}src="${image.src}" data-fallback="${image.fallback}" onerror="if(!this.dataset.failed&&this.dataset.fallback){this.dataset.failed='1';this.src=this.dataset.fallback;return;}this.onerror=null;" alt="${alt}" loading="lazy" />`;
+function sortRecipes(recipes){
+  const titlePreference=[
+    'overnight oats','protein pancakes','protein-grießbrei mit beeren','protein-reispudding mango','baked oats cheesecake style',
+    'ei & avocado toast','eier-avocado-toast deluxe',
+    'skyr berry cup','cottage cheese bowl','quark-apfel-zimt-becher','skyr-schoko-bananen-creme','protein mug cake',
+    'chicken rice bowl','thunfisch wrap','hähnchen-wrap fitness','thunfisch-reis-salat','beef burger bowl',
+    'lachs mit süßkartoffel','puten pasta fit','garnelen couscous fit','puten-bolognese mit zucchini','lachs-spinat-pasta light','turkey burger bowl','rinderhack-gemüse-pfanne'
+  ];
+  const prefMap=new Map(titlePreference.map((item,index)=>[item,index]));
+  return recipes
+    .map(normalizeForSort)
+    .sort((a,b)=>{
+      if(a.categoryOrder!==b.categoryOrder) return a.categoryOrder-b.categoryOrder;
+      const aPref=prefMap.has(a.title.toLowerCase()) ? prefMap.get(a.title.toLowerCase()) : 999;
+      const bPref=prefMap.has(b.title.toLowerCase()) ? prefMap.get(b.title.toLowerCase()) : 999;
+      if(aPref!==bPref) return aPref-bPref;
+      return a.title.localeCompare(b.title,'de');
+    })
+    .map((item,index)=>({...item,index}));
 }
-
-function showToast(message){
-  els.toast.textContent=message; els.toast.classList.add('show');
-  clearTimeout(showToast._timer);
-  showToast._timer=setTimeout(()=>els.toast.classList.remove('show'),1900);
+state.recipes=sortRecipes(window.RECIPE_DATA || []);
+function getVisibleRecipes(){
+  return state.recipes.filter(recipe=>{
+    const matchesCategory=state.categoryFilter==='Alle' || displayCategory(recipe.category)===state.categoryFilter;
+    const q=state.filterText.trim().toLowerCase();
+    const matchesText=!q || recipe.title.toLowerCase().includes(q) || displayCategory(recipe.category).toLowerCase().includes(q);
+    return matchesCategory && matchesText;
+  });
 }
 function getRecipeByHash(){
   const hash=decodeURIComponent(location.hash.replace('#','').trim());
   if(!hash) return null;
   return state.recipes.find(recipe=>recipe.id===hash)||null;
+}
+function isFavorite(id){ return state.favorites.has(id); }
+function getRecipeImage(id){
+  return RECIPE_IMAGES[id]||{src:assetUrl(`./images/${id}.jpg`),fallback:assetUrl(`./images/${id}.jpg`)};
+}
+function recipeImageTag(id,alt='',className=''){
+  const image=getRecipeImage(id);
+  return `<img ${className?`class="${className}" `:''}src="${image.src}" data-fallback="${image.fallback}" onerror="if(!this.dataset.failed&&this.dataset.fallback){this.dataset.failed='1';this.src=this.dataset.fallback;return;}this.onerror=null;" alt="${alt}" loading="lazy" />`;
+}
+function showToast(message){
+  els.toast.textContent=message;
+  els.toast.classList.add('show');
+  clearTimeout(showToast._timer);
+  showToast._timer=setTimeout(()=>els.toast.classList.remove('show'),2200);
 }
 function setCurrentRecipe(index, updateHash=true){
   if(!state.recipes.length) return;
@@ -513,31 +1107,33 @@ function restoreInitialRecipe(){
   const lastRecipe=state.recipes.find(recipe=>recipe.id===lastId);
   if(lastRecipe) state.currentIndex=lastRecipe.index;
 }
-function isFavorite(id){ return state.favorites.has(id); }
 function recipePoster(recipe){
   const ing=recipe.ingredients.map(item=>`<li><span class="dot">✓</span><span>${item}</span></li>`).join('');
   const steps=recipe.steps.map((item,idx)=>`<li><span class="step-no">${idx+1}</span><span>${item}</span></li>`).join('');
-  const badges=recipe.badges.map(item=>`<span class="badge">${item}</span>`).join('');
+  const badges=(recipe.badges||[]).map(item=>`<span class="badge">${item}</span>`).join('');
   const fav=isFavorite(recipe.id)?'★':'☆';
   return `
     <div class="app-shell">
-      <header class="topbar">
-        <div class="brand">
-          <img class="brand-logo" src="${assetUrl('./brand/logo-fit-coaching.png')}" alt="Fit Coaching Logo" />
-          <div class="brand-copy">
-            <h1>Fitnessrezepte App</h1>
-            <p>Deine virtuelle Rezeptsammlung mit echten Food-Fotos</p>
+      <header class="header-card">
+        <div class="topbar">
+          <div class="brand">
+            <img class="brand-logo" src="${assetUrl('./brand/logo-fit-coaching.png')}" alt="Fit Coaching Logo" />
+            <div class="brand-copy">
+              <div class="eyebrow"><span class="eyebrow-dot"></span>Fit Coaching Rezeptwelt</div>
+              <h1>Fitnessrezepte App</h1>
+              <div class="brand-meta">24 Rezepte · Favoriten · Story-Bild für Social Media</div>
+            </div>
           </div>
-        </div>
-        <div class="action-row">
-          <button class="chip-btn" id="openRecipesBtn" aria-label="Rezeptliste öffnen">Rezepte</button>
-          <button class="icon-btn" id="favoriteBtn" aria-label="Favorit umschalten" title="Favorit">${fav}</button>
-          <button class="icon-btn" id="shareBtn" aria-label="Rezept teilen" title="Teilen">↗</button>
+          <div class="action-row">
+            <button class="chip-btn" id="openRecipesBtn" aria-label="Rezeptliste öffnen">Rezepte</button>
+            <button class="icon-btn ${isFavorite(recipe.id)?'active':''}" id="favoriteBtn" aria-label="Favorit umschalten" title="Favorit">${fav}</button>
+            <button class="icon-btn" id="shareBtn" aria-label="Rezept teilen" title="Teilen">↗</button>
+          </div>
         </div>
       </header>
 
       <section class="stats-strip" aria-label="Kurzübersicht">
-        <div class="stat-card"><div class="label">Kategorie</div><div class="value">${recipe.category}</div></div>
+        <div class="stat-card"><div class="label">Kategorie</div><div class="value">${displayCategory(recipe.category)}</div></div>
         <div class="stat-card"><div class="label">Zubereitung</div><div class="value">${recipe.time}</div></div>
         <div class="stat-card"><div class="label">Rezepte</div><div class="value">${state.recipes.length}</div></div>
         <div class="stat-card"><div class="label">Favoriten</div><div class="value">${state.favorites.size}</div></div>
@@ -549,7 +1145,10 @@ function recipePoster(recipe){
             <div>
               <div class="badge-row">${badges}</div>
               <h2 class="recipe-title">${recipe.title}</h2>
-              <div class="recipe-sub">${recipe.category} · ${recipe.time}</div>
+              <div class="recipe-sub">
+                <span>${displayCategory(recipe.category)}</span>
+                <span>${recipe.time}</span>
+              </div>
             </div>
             <div class="poster-brand" aria-hidden="true">
               <img src="${assetUrl('./brand/logo-fit-coaching.png')}" alt="" />
@@ -569,17 +1168,17 @@ function recipePoster(recipe){
 
           <section class="content-grid">
             <div class="panel">
-              <h3>Zutaten</h3>
+              <div class="panel-head"><h3>Zutaten</h3><div class="panel-tag">${recipe.ingredients.length} Zutaten</div></div>
               <ul class="ing-list">${ing}</ul>
             </div>
             <div class="panel">
-              <h3>Zubereitung</h3>
+              <div class="panel-head"><h3>Zubereitung</h3><div class="panel-tag">${recipe.steps.length} Schritte</div></div>
               <ol class="step-list">${steps}</ol>
             </div>
           </section>
 
           <div class="poster-footer">
-            <div class="mini">Rezept ${state.currentIndex+1} von ${state.recipes.length}</div>
+            <div class="mini"><strong>Rezept</strong> ${state.currentIndex+1} von ${state.recipes.length}</div>
             <div class="mini">${isFavorite(recipe.id)?'Als Favorit gespeichert':'Noch nicht favorisiert'}</div>
           </div>
         </article>
@@ -590,6 +1189,7 @@ function recipePoster(recipe){
             <button class="nav-btn" id="nextBtn">Nächstes Rezept →</button>
           </div>
           <div class="utility-group">
+            <button class="ghost-btn" id="storyQuickBtn">Story-Bild</button>
             <button class="primary-btn" id="randomBtn">Zufallsrezept</button>
             <div class="secondary-info">${recipe.title}</div>
           </div>
@@ -598,6 +1198,46 @@ function recipePoster(recipe){
     </div>
   `;
 }
+function renderFilterChips(){
+  els.filterRow.innerHTML=CATEGORY_ORDER.map(label=>`<button class="filter-chip ${state.categoryFilter===label?'active':''}" data-filter="${label}">${label}</button>`).join('');
+}
+function renderRecipeList(){
+  renderFilterChips();
+  const current=state.recipes[state.currentIndex];
+  const visible=getVisibleRecipes();
+  if(!visible.length){
+    els.drawerList.innerHTML='<div class="empty-hint">Keine passenden Rezepte gefunden.</div>';
+    return;
+  }
+  const grouped={};
+  visible.forEach(item=>{
+    const key=displayCategory(item.category);
+    if(!grouped[key]) grouped[key]=[];
+    grouped[key].push(item);
+  });
+  const sections=CATEGORY_ORDER.filter(label=>label!=='Alle' && grouped[label]?.length).map(label=>`
+    <section class="drawer-group">
+      <div class="drawer-group-title">${label}</div>
+      ${grouped[label].map(item=>`
+        <button class="recipe-link ${item.id===current.id?'active':''}" data-open-recipe="${item.index}" style="--accent:${item.accent}">
+          <div class="recipe-link-main">
+            ${recipeImageTag(item.id, '', 'recipe-thumb')}
+            <div class="recipe-text">
+              <div>${item.title}</div>
+              <small>${displayCategory(item.category)} · ${item.time}</small>
+            </div>
+          </div>
+          <div class="favorite-star">${isFavorite(item.id)?'★':'☆'}</div>
+        </button>
+      `).join('')}
+    </section>
+  `).join('');
+  els.drawerList.innerHTML=sections;
+}
+function openDrawer(){ els.drawerBackdrop.classList.add('open'); els.drawer.classList.add('open'); }
+function closeDrawer(){ els.drawerBackdrop.classList.remove('open'); els.drawer.classList.remove('open'); }
+function openShareSheet(){ els.shareBackdrop.classList.add('open'); els.shareSheet.classList.add('open'); }
+function closeShareSheet(){ els.shareBackdrop.classList.remove('open'); els.shareSheet.classList.remove('open'); }
 function toggleFavorite(){
   const recipe=state.recipes[state.currentIndex];
   if(isFavorite(recipe.id)){ state.favorites.delete(recipe.id); showToast('Favorit entfernt'); }
@@ -605,52 +1245,260 @@ function toggleFavorite(){
   localStorage.setItem(STORAGE_KEYS.favorites, JSON.stringify(Array.from(state.favorites)));
   render();
 }
-async function shareRecipe(){
+async function shareLink(){
   const recipe=state.recipes[state.currentIndex];
   const url=location.href;
   const shareData={title:recipe.title,text:`${recipe.title} · ${recipe.protein} g Protein · ${recipe.kcal} kcal`,url};
   if(navigator.share){
-    try{ await navigator.share(shareData); return; }
-    catch(err){ if(err && err.name==='AbortError') return; }
+    try{ await navigator.share(shareData); return true; }
+    catch(err){ if(err && err.name==='AbortError') return false; }
   }
-  try{ await navigator.clipboard.writeText(url); showToast('Link zum Rezept kopiert'); }
-  catch(err){ showToast('Teilen im Browser nicht verfügbar'); }
+  return false;
 }
-function renderRecipeList(){
+async function copyLink(){
+  const url=location.href;
+  try{ await navigator.clipboard.writeText(url); showToast('Link zum Rezept kopiert'); return true; }
+  catch(err){ showToast('Link konnte nicht kopiert werden'); return false; }
+}
+function roundedRect(ctx,x,y,w,h,r){
+  const radius=Math.min(r,w/2,h/2);
+  ctx.beginPath();
+  ctx.moveTo(x+radius,y);
+  ctx.arcTo(x+w,y,x+w,y+h,radius);
+  ctx.arcTo(x+w,y+h,x,y+h,radius);
+  ctx.arcTo(x,y+h,x,y,radius);
+  ctx.arcTo(x,y,x+w,y,radius);
+  ctx.closePath();
+}
+function drawCoverImage(ctx,img,x,y,w,h,radius){
+  const iw=img.naturalWidth||img.width;
+  const ih=img.naturalHeight||img.height;
+  const scale=Math.max(w/iw,h/ih);
+  const sw=iw*scale;
+  const sh=ih*scale;
+  const dx=x+(w-sw)/2;
+  const dy=y+(h-sh)/2;
+  ctx.save();
+  roundedRect(ctx,x,y,w,h,radius);
+  ctx.clip();
+  ctx.drawImage(img,dx,dy,sw,sh);
+  ctx.restore();
+}
+function loadImage(src){
+  return new Promise((resolve,reject)=>{
+    const img=new Image();
+    img.crossOrigin='anonymous';
+    img.onload=()=>resolve(img);
+    img.onerror=reject;
+    img.src=src;
+  });
+}
+function blobToFile(blob,name){
+  try{ return new File([blob], name, {type:blob.type||'image/png'}); }
+  catch(err){ blob.name=name; return blob; }
+}
+function downloadBlob(blob,filename){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;
+  a.download=filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),1200);
+}
+async function buildStoryBlob(recipe){
+  const canvas=document.createElement('canvas');
+  canvas.width=1080;
+  canvas.height=1920;
+  const ctx=canvas.getContext('2d');
+  const [recipeImg,logoImg]=await Promise.all([
+    loadImage(getRecipeImage(recipe.id).src),
+    loadImage(assetUrl('./brand/logo-fit-coaching.png')).catch(()=>null)
+  ]);
+
+  const gradient=ctx.createLinearGradient(0,0,0,canvas.height);
+  gradient.addColorStop(0,'#f8fbff');
+  gradient.addColorStop(1,'#eef2fb');
+  ctx.fillStyle=gradient;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  const glow1=ctx.createRadialGradient(150,160,10,150,160,260);
+  glow1.addColorStop(0,'rgba(239,155,32,.34)');
+  glow1.addColorStop(1,'rgba(239,155,32,0)');
+  ctx.fillStyle=glow1;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  const glow2=ctx.createRadialGradient(920,260,10,920,260,260);
+  glow2.addColorStop(0,'rgba(70,110,255,.24)');
+  glow2.addColorStop(1,'rgba(70,110,255,0)');
+  ctx.fillStyle=glow2;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  ctx.fillStyle='#ffffff';
+  roundedRect(ctx,64,64,952,1792,44);
+  ctx.fill();
+  ctx.strokeStyle='rgba(223,230,243,1)';
+  ctx.lineWidth=2;
+  ctx.stroke();
+
+  if(logoImg){
+    ctx.fillStyle='rgba(255,255,255,.92)';
+    roundedRect(ctx,116,116,420,110,28);
+    ctx.fill();
+    ctx.drawImage(logoImg,140,138,360,68);
+  }
+
+  ctx.fillStyle='#182033';
+  ctx.font='700 34px Inter, Arial, sans-serif';
+  ctx.fillText('FITNESSREZEPT',116,286);
+
+  ctx.font='900 72px Inter, Arial, sans-serif';
+  const titleLines=wrapText(ctx, recipe.title.toUpperCase(), 848);
+  let titleY=372;
+  titleLines.slice(0,2).forEach(line=>{ ctx.fillText(line,116,titleY); titleY+=82; });
+
+  ctx.fillStyle='#62708d';
+  ctx.font='700 30px Inter, Arial, sans-serif';
+  ctx.fillText(`${displayCategory(recipe.category)} · ${recipe.time} · ${recipe.protein} g Protein`,116,titleY+8);
+
+  drawCoverImage(ctx,recipeImg,116,470,848,710,36);
+
+  const macroY=1228;
+  const macroWidth=196;
+  const macroGap=16;
+  const macros=[
+    ['Kalorien',`${recipe.kcal} kcal`],
+    ['Protein',`${recipe.protein} g`],
+    ['KH',`${recipe.carbs} g`],
+    ['Fett',`${recipe.fat} g`]
+  ];
+  macros.forEach((macro,idx)=>{
+    const x=116 + idx*(macroWidth+macroGap);
+    ctx.fillStyle='rgba(246,248,255,.98)';
+    roundedRect(ctx,x,macroY,macroWidth,132,24);
+    ctx.fill();
+    ctx.fillStyle='#7b88a2';
+    ctx.font='800 22px Inter, Arial, sans-serif';
+    ctx.fillText(macro[0].toUpperCase(),x+24,macroY+46);
+    ctx.fillStyle='#182033';
+    ctx.font='900 34px Inter, Arial, sans-serif';
+    ctx.fillText(macro[1],x+24,macroY+92);
+  });
+
+  ctx.fillStyle='rgba(255,248,237,1)';
+  roundedRect(ctx,116,1408,848,260,30);
+  ctx.fill();
+  ctx.fillStyle='#8f5a00';
+  ctx.font='900 24px Inter, Arial, sans-serif';
+  ctx.fillText('ZUTATEN-HIGHLIGHTS',148,1460);
+  ctx.fillStyle='#24314d';
+  ctx.font='700 34px Inter, Arial, sans-serif';
+  const ingredientsText=recipe.ingredients.slice(0,4).join(' · ');
+  const ingLines=wrapText(ctx, ingredientsText, 784);
+  let iy=1518;
+  ingLines.slice(0,3).forEach(line=>{ ctx.fillText(line,148,iy); iy+=42; });
+
+  ctx.fillStyle='#62708d';
+  ctx.font='700 26px Inter, Arial, sans-serif';
+  ctx.fillText('Mehr Rezepte in der Fit Coaching App',116,1766);
+
+  return new Promise((resolve,reject)=>canvas.toBlob(blob=>blob?resolve(blob):reject(new Error('blob failed')),'image/png',0.94));
+}
+function wrapText(ctx,text,maxWidth){
+  const words=String(text).split(/\s+/);
+  const lines=[];
+  let line='';
+  words.forEach(word=>{
+    const test=line ? `${line} ${word}` : word;
+    if(ctx.measureText(test).width>maxWidth && line){
+      lines.push(line);
+      line=word;
+    }else line=test;
+  });
+  if(line) lines.push(line);
+  return lines;
+}
+async function shareStoryImage(downloadOnly=false){
   const recipe=state.recipes[state.currentIndex];
-  const rows=state.recipes.map(item=>`
-    <button class="recipe-link ${item.id===recipe.id?'active':''}" data-open-recipe="${item.index}" style="--accent:${item.accent}">
-      <div class="recipe-link-main">
-        ${recipeImageTag(item.id, "", "recipe-thumb")}
-        <div class="recipe-text"><div>${item.title}</div><small>${item.category} · ${item.time}</small></div>
-      </div>
-      <div class="favorite-star">${isFavorite(item.id)?'★':'☆'}</div>
-    </button>
-  `).join('');
-  els.drawerList.innerHTML=rows||'<div class="empty-hint">Keine Rezepte gefunden.</div>';
+  closeShareSheet();
+  showToast(downloadOnly ? 'Story-Bild wird gespeichert ...' : 'Story-Bild wird vorbereitet ...');
+  try{
+    const blob=await buildStoryBlob(recipe);
+    const filename=`${recipe.id}-story.png`;
+    if(!downloadOnly && navigator.share && navigator.canShare){
+      const file=blobToFile(blob,filename);
+      try{
+        if(navigator.canShare({files:[file]})){
+          await navigator.share({
+            files:[file],
+            title:recipe.title,
+            text:`${recipe.title} · Rezept aus der Fit Coaching App`
+          });
+          showToast('Story-Bild geöffnet');
+          return;
+        }
+      }catch(err){
+        if(err && err.name==='AbortError') return;
+      }
+    }
+    downloadBlob(blob,filename);
+    showToast('Story-Bild gespeichert');
+  }catch(err){
+    console.error(err);
+    showToast('Story-Bild konnte nicht erstellt werden');
+  }
 }
-function openDrawer(){ els.drawerBackdrop.classList.add('open'); els.drawer.classList.add('open'); }
-function closeDrawer(){ els.drawerBackdrop.classList.remove('open'); els.drawer.classList.remove('open'); }
+async function handleShareLink(){
+  closeShareSheet();
+  const ok=await shareLink();
+  if(!ok) await copyLink();
+}
 function bindEvents(){
   document.getElementById('prevBtn')?.addEventListener('click',()=>setCurrentRecipe(state.currentIndex-1));
   document.getElementById('nextBtn')?.addEventListener('click',()=>setCurrentRecipe(state.currentIndex+1));
   document.getElementById('randomBtn')?.addEventListener('click',()=>{
     if(state.recipes.length<2){ showToast('Nur ein Rezept vorhanden'); return; }
     let next=state.currentIndex;
-    while(next===state.currentIndex){ next=Math.floor(Math.random()*state.recipes.length); }
+    while(next===state.currentIndex) next=Math.floor(Math.random()*state.recipes.length);
     setCurrentRecipe(next);
   });
   document.getElementById('favoriteBtn')?.addEventListener('click',toggleFavorite);
-  document.getElementById('shareBtn')?.addEventListener('click',shareRecipe);
+  document.getElementById('shareBtn')?.addEventListener('click',openShareSheet);
+  document.getElementById('storyQuickBtn')?.addEventListener('click',()=>shareStoryImage(true));
   document.getElementById('openRecipesBtn')?.addEventListener('click',openDrawer);
-  document.getElementById('closeDrawerBtn')?.addEventListener('click',closeDrawer);
-  els.drawerBackdrop.addEventListener('click',closeDrawer);
+  bindDrawerOnlyEvents();
+}
+function bindDrawerOnlyEvents(){
   els.drawerList.querySelectorAll('[data-open-recipe]').forEach(btn=>{
     btn.addEventListener('click',()=>{
       const index=Number(btn.getAttribute('data-open-recipe'));
-      closeDrawer(); setCurrentRecipe(index);
+      closeDrawer();
+      setCurrentRecipe(index);
     });
   });
+  els.filterRow.querySelectorAll('[data-filter]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      state.categoryFilter=btn.getAttribute('data-filter')||'Alle';
+      renderRecipeList();
+      bindDrawerOnlyEvents();
+    });
+  });
+}
+function bindStaticEvents(){
+  els.drawerSearch.addEventListener('input',()=>{
+    state.filterText=els.drawerSearch.value||'';
+    renderRecipeList();
+    bindDrawerOnlyEvents();
+  });
+  document.getElementById('closeDrawerBtn')?.addEventListener('click',closeDrawer);
+  document.getElementById('closeShareBtn')?.addEventListener('click',closeShareSheet);
+  document.getElementById('shareStoryBtn')?.addEventListener('click',()=>shareStoryImage(false));
+  document.getElementById('downloadStoryBtn')?.addEventListener('click',()=>shareStoryImage(true));
+  document.getElementById('shareLinkBtn')?.addEventListener('click',handleShareLink);
+  document.getElementById('copyLinkBtn')?.addEventListener('click',async()=>{ closeShareSheet(); await copyLink(); });
+  els.drawerBackdrop.addEventListener('click',closeDrawer);
+  els.shareBackdrop.addEventListener('click',closeShareSheet);
 }
 function render(){
   const recipe=state.recipes[state.currentIndex];
@@ -668,7 +1516,10 @@ window.addEventListener('hashchange',()=>{
   const target=getRecipeByHash();
   if(target) setCurrentRecipe(target.index,false);
 });
-restoreInitialRecipe(); render(); registerServiceWorker();
-</script>
+restoreInitialRecipe();
+bindStaticEvents();
+render();
+registerServiceWorker();
+  </script>
 </body>
 </html>

@@ -32,3 +32,16 @@ Dein Fit-Coaching-Logo ist bereits eingebaut:
 - in den Rezeptbildern
 - in den App-Icons / PWA-Icons
 
+
+
+## Neu in v11
+- 24 Rezepte insgesamt
+- 12 neue Rezeptbilder und 12 neue Rezepte ergänzt
+- Untertitel unter dem App-Namen entfernt
+
+
+## Neu in v12
+- Rezeptliste sortiert nach Frühstück, Snack, Mittagessen, Abendessen
+- Story-Bild-Export im 9:16-Format
+- neue Teilen-Oberfläche
+- visuell überarbeitetes Layout

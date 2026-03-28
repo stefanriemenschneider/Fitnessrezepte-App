@@ -1,4 +1,4 @@
-const CACHE_NAME='fitnessrezepte-app-v9-cachefix';
+const CACHE_NAME='fitnessrezepte-app-v12-style-story-sort';
 const APP_SHELL=['./','./index.html','./manifest.webmanifest','./icons/icon.svg','./icons/icon-192.png','./icons/icon-512.png','./brand/logo.svg','./brand/logo-fit-coaching.png','./icons/favicon.png'];
 self.addEventListener('install',event=>{event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.addAll(APP_SHELL)).then(()=>self.skipWaiting()));});
 self.addEventListener('activate',event=>{event.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(key=>key!==CACHE_NAME).map(key=>caches.delete(key)))).then(()=>self.clients.claim()));});
