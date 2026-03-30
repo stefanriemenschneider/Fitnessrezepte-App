@@ -458,23 +458,23 @@
     "title": "Overnight Oats",
     "category": "Frühstück",
     "time": "5 Min. + Ziehzeit",
-    "kcal": 440,
-    "protein": 33,
-    "carbs": 46,
-    "fat": 13,
+    "kcal": 430,
+    "protein": 32,
+    "carbs": 45,
+    "fat": 11,
     "accent": "#ffd43b",
     "ingredients": [
       "60 g Haferflocken",
       "200 ml Milch oder Drink",
-      "30 g Proteinpulver",
-      "100 g Joghurt",
-      "1 Apfel",
-      "Zimt"
+      "30 g Vanille-Proteinpulver",
+      "100 g Joghurt oder Skyr",
+      "80–100 g gemischte Beeren",
+      "1 TL Honig oder Ahornsirup"
     ],
     "steps": [
-      "Alles außer dem Apfel verrühren.",
+      "Haferflocken, Milch, Protein und Joghurt verrühren.",
       "Über Nacht kalt stellen.",
-      "Am Morgen Apfelwürfel und Zimt ergänzen."
+      "Am Morgen mit Beeren und etwas Honig toppen."
     ],
     "badges": [
       "Meal Prep",
@@ -545,22 +545,21 @@
     "title": "Cottage Cheese Bowl",
     "category": "Snack",
     "time": "5 Min.",
-    "kcal": 310,
+    "kcal": 305,
     "protein": 29,
-    "carbs": 18,
-    "fat": 12,
+    "carbs": 16,
+    "fat": 11,
     "accent": "#b197fc",
     "ingredients": [
       "200 g Hüttenkäse",
-      "1 Kiwi",
-      "15 g Walnüsse",
+      "80–100 g gemischte Beeren",
       "1 TL Honig",
-      "Zimt oder Vanille"
+      "Etwas Vanille oder Zimt"
     ],
     "steps": [
       "Hüttenkäse in eine Bowl geben.",
-      "Kiwi schneiden und Walnüsse hacken.",
-      "Mit Honig und Gewürzen abrunden."
+      "Gemischte Beeren darauf verteilen.",
+      "Mit etwas Honig und Vanille oder Zimt abrunden."
     ],
     "badges": [
       "Snack",
@@ -1031,7 +1030,7 @@ const els={
   shareSheet:document.getElementById('shareSheet'),
   toast:document.getElementById('toast')
 };
-const ASSET_VERSION='v12-20260328-style-story-sort';
+const ASSET_VERSION='v16-20260330-storyfix';
 const RECIPE_IMAGES={};
 function assetUrl(path){ return `${path}?v=${ASSET_VERSION}`; }
 function categoryMeta(category){ return CATEGORY_META[category] || {label:category||'Rezept', order:99}; }
@@ -1189,7 +1188,7 @@ function recipePoster(recipe){
             <button class="nav-btn" id="nextBtn">Nächstes Rezept →</button>
           </div>
           <div class="utility-group">
-            <button class="ghost-btn" id="storyQuickBtn">Story-Bild</button>
+            <button class="ghost-btn" id="storyQuickBtn" >Story-Bild teilen</button>
             <button class="primary-btn" id="randomBtn">Zufallsrezept</button>
             <div class="secondary-info">${recipe.title}</div>
           </div>
@@ -1302,10 +1301,18 @@ function downloadBlob(blob,filename){
   const a=document.createElement('a');
   a.href=url;
   a.download=filename;
+  a.rel='noopener';
   document.body.appendChild(a);
   a.click();
   a.remove();
-  setTimeout(()=>URL.revokeObjectURL(url),1200);
+  setTimeout(()=>URL.revokeObjectURL(url),4000);
+  return url;
+}
+function openBlobInNewTab(blob){
+  const url=URL.createObjectURL(blob);
+  const win=window.open(url,'_blank','noopener');
+  setTimeout(()=>URL.revokeObjectURL(url),15000);
+  return !!win;
 }
 async function buildStoryBlob(recipe){
   const canvas=document.createElement('canvas');
@@ -1422,14 +1429,15 @@ function wrapText(ctx,text,maxWidth){
 async function shareStoryImage(downloadOnly=false){
   const recipe=state.recipes[state.currentIndex];
   closeShareSheet();
-  showToast(downloadOnly ? 'Story-Bild wird gespeichert ...' : 'Story-Bild wird vorbereitet ...');
+  showToast(downloadOnly ? 'Story-Bild wird vorbereitet ...' : 'Story-Bild wird vorbereitet ...');
   try{
     const blob=await buildStoryBlob(recipe);
     const filename=`${recipe.id}-story.png`;
-    if(!downloadOnly && navigator.share && navigator.canShare){
-      const file=blobToFile(blob,filename);
+    const file=blobToFile(blob,filename);
+
+    if(navigator.share){
       try{
-        if(navigator.canShare({files:[file]})){
+        if(navigator.canShare && navigator.canShare({files:[file]})){
           await navigator.share({
             files:[file],
             title:recipe.title,
@@ -1438,16 +1446,39 @@ async function shareStoryImage(downloadOnly=false){
           showToast('Story-Bild geöffnet');
           return;
         }
+        if(!downloadOnly){
+          await navigator.share({
+            title:recipe.title,
+            text:`${recipe.title} · Rezept aus der Fit Coaching App`,
+            url:location.href
+          });
+          showToast('Teilen geöffnet');
+          return;
+        }
       }catch(err){
         if(err && err.name==='AbortError') return;
       }
     }
-    downloadBlob(blob,filename);
-    showToast('Story-Bild gespeichert');
+
+    try{
+      downloadBlob(blob,filename);
+      showToast(downloadOnly ? 'Story-Bild gespeichert' : 'Story-Bild heruntergeladen');
+      return;
+    }catch(err){}
+
+    if(openBlobInNewTab(blob)){
+      showToast('Story-Bild in neuem Tab geöffnet');
+      return;
+    }
+
+    showToast('Story-Bild konnte nicht geöffnet werden');
   }catch(err){
     console.error(err);
     showToast('Story-Bild konnte nicht erstellt werden');
   }
+}
+async function handleStoryQuickAction(){
+  await shareStoryImage(false);
 }
 async function handleShareLink(){
   closeShareSheet();
@@ -1465,7 +1496,7 @@ function bindEvents(){
   });
   document.getElementById('favoriteBtn')?.addEventListener('click',toggleFavorite);
   document.getElementById('shareBtn')?.addEventListener('click',openShareSheet);
-  document.getElementById('storyQuickBtn')?.addEventListener('click',()=>shareStoryImage(true));
+  document.getElementById('storyQuickBtn')?.addEventListener('click',handleStoryQuickAction);
   document.getElementById('openRecipesBtn')?.addEventListener('click',openDrawer);
   bindDrawerOnlyEvents();
 }
